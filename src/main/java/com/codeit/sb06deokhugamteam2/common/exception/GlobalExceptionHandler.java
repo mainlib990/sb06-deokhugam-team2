@@ -2,6 +2,7 @@ package com.codeit.sb06deokhugamteam2.common.exception;
 
 import com.codeit.sb06deokhugamteam2.common.exception.exceptions.AWSException;
 import com.codeit.sb06deokhugamteam2.common.exception.exceptions.MDCException;
+import com.codeit.sb06deokhugamteam2.common.exception.exceptions.NaverSearchException;
 import com.codeit.sb06deokhugamteam2.common.exception.exceptions.NotificationException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
