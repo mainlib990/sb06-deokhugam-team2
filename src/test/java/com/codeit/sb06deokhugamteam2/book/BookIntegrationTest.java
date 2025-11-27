@@ -23,7 +23,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -123,6 +122,5 @@ public class BookIntegrationTest {
         assertThat(naverBookDto.getPublishedDate()).isEqualTo(LocalDate.now());
         assertThat(naverBookDto.getDescription()).isEqualTo("description");
         assertThat(naverBookDto.getThumbnailImage()).isEqualTo("Base64 Encoding Image");
-
     }
 }
