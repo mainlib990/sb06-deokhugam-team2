@@ -5,8 +5,6 @@ import com.codeit.sb06deokhugamteam2.comment.dto.CommentCreateRequest;
 import com.codeit.sb06deokhugamteam2.comment.dto.CommentDto;
 import com.codeit.sb06deokhugamteam2.comment.mapper.CommentMapper;
 import com.codeit.sb06deokhugamteam2.comment.repository.CommentRepository;
-import com.codeit.sb06deokhugamteam2.review.entity.Review;
-import com.codeit.sb06deokhugamteam2.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
