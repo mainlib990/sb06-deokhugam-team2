@@ -18,7 +18,6 @@ public interface UserMapper {
     @Mapping(target = "reviews", ignore = true)
     @Mapping(target = "comments", ignore = true)
     @Mapping(target = "reviewLikes", ignore = true)
-    @Mapping(target = "notifications", ignore = true)
     User toEntity(UserRegisterRequest request);
 
     UserDto toDto(User user);

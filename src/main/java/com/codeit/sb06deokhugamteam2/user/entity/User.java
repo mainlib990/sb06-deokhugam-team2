@@ -1,5 +1,8 @@
 package com.codeit.sb06deokhugamteam2.user.entity;
 
+import com.codeit.sb06deokhugamteam2.comment.entity.Comment;
+import com.codeit.sb06deokhugamteam2.review.entity.Review;
+import com.codeit.sb06deokhugamteam2.review.entity.ReviewLike;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -45,16 +48,13 @@ public class User {
     private boolean deleted;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private List<review> reviews = new ArrayList<>();
+    private List<Review> reviews = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private List<comment> comments = new ArrayList<>();
+    private List<Comment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private List<reviewLike> reviewLikes = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
-    private List<notification> notifications = new ArrayList<>();
+    private List<ReviewLike> reviewLikes = new ArrayList<>();
 
     public User(String email, String nickname, String password) {
         this.email = email;
