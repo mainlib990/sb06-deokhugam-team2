@@ -46,8 +46,14 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(AWSException.class)
   public ResponseEntity<ErrorResponse> AWSExceptionHandler(AWSException ex) {
-    ErrorResponse error = createErrorResponse(ex, ex.getHttpStatus(), ex.getDetails());
-    return ResponseEntity.status(error.getStatus()).body(error);
+      ErrorResponse error = createErrorResponse(ex, ex.getHttpStatus(), ex.getDetails());
+      return ResponseEntity.status(error.getStatus()).body(error);
+  }
+
+  @ExceptionHandler(NaverSearchException.class)
+  public ResponseEntity<ErrorResponse> NaverSearchExceptionHandler(NaverSearchException ex) {
+      ErrorResponse error = createErrorResponse(ex, ex.getHttpStatus(), ex.getDetails());
+      return ResponseEntity.status(error.getStatus()).body(error);
   }
 
   @ExceptionHandler(ConstraintViolationException.class)
