@@ -3,6 +3,7 @@ package com.codeit.sb06deokhugamteam2.book.storage;
 import com.codeit.sb06deokhugamteam2.common.exception.ErrorCode;
 import com.codeit.sb06deokhugamteam2.common.exception.exceptions.AWSException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.core.sync.RequestBody;
@@ -51,7 +52,7 @@ public class S3Storage {
             Map<String, Object> details = Map.of(
                     "key", key
             );
-            throw new AWSException(ErrorCode.AWS_EXCEPTION, details);
+            throw new AWSException(ErrorCode.AWS_EXCEPTION, details, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

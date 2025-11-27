@@ -46,7 +46,7 @@ public class GlobalExceptionHandler {
 
   @ExceptionHandler(AWSException.class)
   public ResponseEntity<ErrorResponse> AWSExceptionHandler(AWSException ex) {
-      ErrorResponse error = createErrorResponse(ex, HttpStatus.INTERNAL_SERVER_ERROR, ex.getDetails());
+      ErrorResponse error = createErrorResponse(ex, ex.getHttpStatus(), ex.getDetails());
       return ResponseEntity.status(error.getStatus()).body(error);
   }
 

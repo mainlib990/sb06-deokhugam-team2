@@ -8,6 +8,9 @@ build/
 #환경 변수
 .env
 
+#로그
+.logs/*
+
 ### STS ###
 .apt_generated
 .classpath

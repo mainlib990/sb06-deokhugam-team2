@@ -1,20 +1,13 @@
 package com.codeit.sb06deokhugamteam2.common.exception.exceptions;
 
 import com.codeit.sb06deokhugamteam2.common.exception.ErrorCode;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import org.springframework.http.HttpStatus;
 
-import java.util.HashMap;
 import java.util.Map;
 
-@Getter
-@AllArgsConstructor
-public class AWSException extends RuntimeException {
-    private final ErrorCode errorCode;
-    private final Map<String, Object> details;
+public class AWSException extends BasicException {
 
-    public AWSException(ErrorCode errorCode) {
-        this.errorCode = errorCode;
-        details = new HashMap<>();
+    public AWSException(ErrorCode errorCode, Map<String, Object> details, HttpStatus httpStatus) {
+        super(errorCode, details, httpStatus);
     }
 }
