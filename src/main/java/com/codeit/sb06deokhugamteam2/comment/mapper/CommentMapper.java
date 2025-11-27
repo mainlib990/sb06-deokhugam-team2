@@ -10,7 +10,7 @@ public class CommentMapper {
         return new CommentDto(
                 comment.getId().toString(),
                 comment.getUser().getId().toString(),
-                comment.getReview().getId().toString(),
+                comment.getReview().id().toString(),
                 comment.getUser().getNickname(),
                 comment.getContent(),
                 comment.getCreatedAt(),

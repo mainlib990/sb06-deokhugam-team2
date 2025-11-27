@@ -1,5 +1,7 @@
 package com.codeit.sb06deokhugamteam2.comment.entity;
 
+import com.codeit.sb06deokhugamteam2.review.entity.Review;
+import com.codeit.sb06deokhugamteam2.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -50,5 +52,10 @@ public class Comment {
 
     public void softDelete() {
         this.deleted = true;
+    }
+
+    public void updateComment(String newContent) {
+        this.content = newContent;
+        this.updatedAt = Instant.now();
     }
 }
