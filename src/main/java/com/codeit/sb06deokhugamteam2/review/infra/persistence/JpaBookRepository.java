@@ -2,14 +2,14 @@ package com.codeit.sb06deokhugamteam2.review.infra.persistence;
 
 import com.codeit.sb06deokhugamteam2.book.entity.Book;
 import com.codeit.sb06deokhugamteam2.review.domain.BookRepository;
-import com.codeit.sb06deokhugamteam2.review.domain.ReviewException;
+import com.codeit.sb06deokhugamteam2.review.domain.ReviewBook;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
 import java.util.UUID;
-import java.util.function.Function;
 
 @Component
 @Transactional(readOnly = true)
@@ -19,10 +19,12 @@ public class JpaBookRepository implements BookRepository {
     private EntityManager em;
 
     @Override
-    public void exists(UUID bookId, Function<UUID, ? extends ReviewException> exceptionFunction) {
+    public Optional<ReviewBook> findById(UUID bookId) {
         Book book = em.find(Book.class, bookId);
         if (book == null) {
-            throw exceptionFunction.apply(bookId);
+            return Optional.empty();
         }
+        var reviewBook = new ReviewBook(book.getId(), book.getTitle(), book.getThumbnailUrl());
+        return Optional.of(reviewBook);
     }
 }

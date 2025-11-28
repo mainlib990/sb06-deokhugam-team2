@@ -6,6 +6,10 @@ import java.util.UUID;
 
 public record ReviewLikeDomain(UUID userId, LocalDateTime likedAt) {
 
+    public boolean isLikedBy(UUID userId) {
+        return Objects.equals(this.userId, userId);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof ReviewLikeDomain that)) return false;

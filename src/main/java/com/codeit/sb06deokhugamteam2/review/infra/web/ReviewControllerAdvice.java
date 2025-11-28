@@ -1,9 +1,9 @@
 package com.codeit.sb06deokhugamteam2.review.infra.web;
 
 import com.codeit.sb06deokhugamteam2.common.exception.ErrorResponse;
-import com.codeit.sb06deokhugamteam2.review.domain.ReviewException.BookNotFoundException;
-import com.codeit.sb06deokhugamteam2.review.domain.ReviewException.DuplicateReviewException;
-import com.codeit.sb06deokhugamteam2.review.domain.ReviewException.UserNotFoundException;
+import com.codeit.sb06deokhugamteam2.review.domain.exception.DuplicateReviewException;
+import com.codeit.sb06deokhugamteam2.review.domain.exception.ReviewBookNotFoundException;
+import com.codeit.sb06deokhugamteam2.review.domain.exception.ReviewUserNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -19,8 +19,8 @@ public class ReviewControllerAdvice {
 
     private static final Logger log = LoggerFactory.getLogger(ReviewControllerAdvice.class);
 
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleUserNotFoundException(UserNotFoundException e) {
+    @ExceptionHandler(ReviewUserNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleUserNotFoundException(ReviewUserNotFoundException e) {
         log.error(e.getMessage());
         ErrorResponse response = ErrorResponse.builder()
                 .timestamp(Instant.now())
@@ -32,8 +32,8 @@ public class ReviewControllerAdvice {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
-    @ExceptionHandler(BookNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleBookNotFoundException(BookNotFoundException e) {
+    @ExceptionHandler(ReviewBookNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleBookNotFoundException(ReviewBookNotFoundException e) {
         log.error(e.getMessage());
         ErrorResponse response = ErrorResponse.builder()
                 .timestamp(Instant.now())

@@ -33,9 +33,7 @@ public class ReviewDomain {
 
     public Snapshot createSnapshot() {
         return new Snapshot(
-                id,
                 deleted,
-                rating,
                 content,
                 Set.copyOf(likes),
                 commentCount,
@@ -56,14 +54,16 @@ public class ReviewDomain {
         return userId;
     }
 
-    public boolean likedByMe(UUID userId) {
-        return likes.stream().anyMatch(like -> like.userId().equals(userId));
+    public int rating() {
+        return rating;
+    }
+
+    public boolean isLikedBy(UUID userId) {
+        return likes.stream().anyMatch(like -> like.isLikedBy(userId));
     }
 
     public record Snapshot(
-            UUID id,
             boolean deleted,
-            int rating,
             String content,
             Set<ReviewLikeDomain> likes,
             int commentCount,

@@ -27,7 +27,7 @@ public class ReviewController implements ReviewApi {
     @PostMapping
     public ResponseEntity<ReviewDto> postReview(@RequestBody @Valid ReviewCreateRequest request) {
         ReviewDto response = reviewService.createReview(request);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @Override
