@@ -76,10 +76,25 @@ public class Book {
     @Column(nullable = false)
     private boolean deleted = false;
 
-    public void update(String thumbnailUrl) {
-        if (thumbnailUrl != null) {
-            this.thumbnailUrl = thumbnailUrl;
-        }
+    public void updateThumbnailUrl(String thumbnailUrl) {
+        this.thumbnailUrl = thumbnailUrl;
+    }
+
+    public void updateAll(String title, String author, String description, String publisher, LocalDate publishedDate, String thumbnailUrl) {
+        this.title = title;
+        this.author = author;
+        this.description = description;
+        this.publisher = publisher;
+        this.publishedDate = publishedDate;
+        this.thumbnailUrl = thumbnailUrl;
+    }
+
+    public void incrementReviewCount() {
+        this.reviewCount = this.reviewCount + 1;
+    }
+
+    public void plusRating(double rating) {
+        this.ratingSum += rating;
     }
 
     public void setDeletedAsTrue() {

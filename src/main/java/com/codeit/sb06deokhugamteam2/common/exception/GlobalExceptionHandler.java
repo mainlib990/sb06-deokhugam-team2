@@ -1,9 +1,6 @@
 package com.codeit.sb06deokhugamteam2.common.exception;
 
-import com.codeit.sb06deokhugamteam2.common.exception.exceptions.AWSException;
-import com.codeit.sb06deokhugamteam2.common.exception.exceptions.MDCException;
-import com.codeit.sb06deokhugamteam2.common.exception.exceptions.NaverSearchException;
-import com.codeit.sb06deokhugamteam2.common.exception.exceptions.NotificationException;
+import com.codeit.sb06deokhugamteam2.common.exception.exceptions.*;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import java.time.Instant;
@@ -41,18 +38,24 @@ public class GlobalExceptionHandler {
     ErrorResponse error = createErrorResponse(ex, ex.getHttpStatus(), ex.getDetails());
     return ResponseEntity.status(error.getStatus()).body(error);
   }
+
+  @ExceptionHandler(BookException.class)
+  public ResponseEntity<ErrorResponse> handleBookException(BookException ex) {
+      ErrorResponse error = createErrorResponse(ex, ex.getHttpStatus(), ex.getDetails());
+      return ResponseEntity.status(error.getStatus()).body(error);
+  }
 // </editor-fold>
 
   // <editor-fold desc="공통 예외처리 부분들">
 
   @ExceptionHandler(AWSException.class)
-  public ResponseEntity<ErrorResponse> AWSExceptionHandler(AWSException ex) {
+  public ResponseEntity<ErrorResponse> handleAWSException(AWSException ex) {
       ErrorResponse error = createErrorResponse(ex, ex.getHttpStatus(), ex.getDetails());
       return ResponseEntity.status(error.getStatus()).body(error);
   }
 
   @ExceptionHandler(NaverSearchException.class)
-  public ResponseEntity<ErrorResponse> NaverSearchExceptionHandler(NaverSearchException ex) {
+  public ResponseEntity<ErrorResponse> handleNaverSearchException(NaverSearchException ex) {
       ErrorResponse error = createErrorResponse(ex, ex.getHttpStatus(), ex.getDetails());
       return ResponseEntity.status(error.getStatus()).body(error);
   }
