@@ -31,8 +31,10 @@ CREATE TABLE Comments
 CREATE TABLE Dashboard
 (
     id           uuid          NOT NULL,
+    entity_id    uuid      NOT NULL,
     ranking_type varchar   NOT NULL,
     period_type  varchar   NOT NULL,
+    rank        bigint      NOT NULL,
     score        float4    NOT NULL,
     created_at   timestamp NOT NULL,
     PRIMARY KEY (id)
