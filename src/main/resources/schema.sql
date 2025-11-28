@@ -85,6 +85,7 @@ CREATE TABLE Users
   password   varchar   NOT NULL,
   created_at timestamp NOT NULL,
   deleted    boolean   NOT NULL DEFAULT false,
+  deleted_at timestamp NOT NULL,
   PRIMARY KEY (id)
 );
 
