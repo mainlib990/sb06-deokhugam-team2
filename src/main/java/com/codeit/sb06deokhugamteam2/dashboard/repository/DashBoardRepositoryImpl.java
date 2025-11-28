@@ -31,26 +31,19 @@ public class DashBoardRepositoryImpl implements DashBoardRepositoryCustom {
         builder.and(dashBoard.rankingType.eq(rankingType));
         builder.and(dashBoard.periodType.eq(period));
 
-        if (direction == Sort.Direction.ASC) {
-            if (cursor != null) {
+        if (cursor != null && after != null) {
+            if (direction == Sort.Direction.ASC) {
                 builder.and(
                         dashBoard.rank.gt(Long.parseLong(cursor))
                                 // 순위가 같을 경우
                                 .or(dashBoard.rank.eq(Long.parseLong(cursor)).and(dashBoard.createdAt.gt(after)))
                 );
-            }
-            if (after != null) {
-                builder.and(dashBoard.createdAt.gt(after));
-            }
-        } else {
-            if (cursor != null) {
+
+            } else {
                 builder.and(
                         dashBoard.rank.lt(Long.parseLong(cursor))
                                 .or(dashBoard.rank.eq(Long.parseLong(cursor)).and(dashBoard.createdAt.lt(after)))
                 );
-            }
-            if (after != null) {
-                builder.and(dashBoard.createdAt.lt(after));
             }
         }
 
