@@ -61,7 +61,7 @@ public class NotificationReadAllBatchConfig {
         .queryString(
             "SELECT n FROM Notification n "
                 + "WHERE n.userId = :userId AND "
-                + " n.createdAt = n.confirmedAt")
+                + "FUNCTION('DATE_TRUNC', 'second', n.createdAt) = FUNCTION('DATE_TRUNC', 'second', n.confirmedAt)")
         .parameterValues(Map.of("userId", UUID.fromString(userId)))
         .pageSize(100)
         .build();
