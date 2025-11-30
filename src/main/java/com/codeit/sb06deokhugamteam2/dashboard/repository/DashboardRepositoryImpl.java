@@ -3,7 +3,7 @@ package com.codeit.sb06deokhugamteam2.dashboard.repository;
 import com.codeit.sb06deokhugamteam2.common.enums.PeriodType;
 import com.codeit.sb06deokhugamteam2.common.enums.RankingType;
 import com.codeit.sb06deokhugamteam2.dashboard.entity.Dashboard;
-import com.codeit.sb06deokhugamteam2.dashboard.entity.QDashBoard;
+import com.codeit.sb06deokhugamteam2.dashboard.entity.QDashboard;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -26,37 +26,37 @@ public class DashboardRepositoryImpl implements DashboardRepositoryCustom {
             Sort.Direction direction,
             Integer limit
     ) {
-        QDashBoard dashBoard = QDashBoard.dashBoard;
+        QDashboard dashboard = QDashboard.dashboard;
 
         BooleanBuilder builder = new BooleanBuilder();
-        builder.and(dashBoard.rankingType.eq(rankingType));
-        builder.and(dashBoard.periodType.eq(period));
+        builder.and(dashboard.rankingType.eq(rankingType));
+        builder.and(dashboard.periodType.eq(period));
 
         if (cursor != null && after != null) {
             if (direction == Sort.Direction.ASC) {
                 builder.and(
-                        dashBoard.rank.gt(Long.parseLong(cursor))
+                        dashboard.rank.gt(Long.parseLong(cursor))
                                 // 순위가 같을 경우
-                                .or(dashBoard.rank.eq(Long.parseLong(cursor)).and(dashBoard.createdAt.gt(after)))
+                                .or(dashboard.rank.eq(Long.parseLong(cursor)).and(dashboard.createdAt.gt(after)))
                 );
 
             } else {
                 builder.and(
-                        dashBoard.rank.lt(Long.parseLong(cursor))
-                                .or(dashBoard.rank.eq(Long.parseLong(cursor)).and(dashBoard.createdAt.lt(after)))
+                        dashboard.rank.lt(Long.parseLong(cursor))
+                                .or(dashboard.rank.eq(Long.parseLong(cursor)).and(dashboard.createdAt.lt(after)))
                 );
             }
         }
 
         return queryFactory
-                .selectFrom(dashBoard)
+                .selectFrom(dashboard)
                 .where(builder)
                 .orderBy(direction == Sort.Direction.ASC ?
-                                dashBoard.rank.asc() :      // 1등부터
-                                dashBoard.rank.desc(),      // 꼴등부터
+                                dashboard.rank.asc() :      // 1등부터
+                                dashboard.rank.desc(),      // 꼴등부터
                         direction == Sort.Direction.ASC ?
-                                dashBoard.createdAt.asc() :      // 오래된 순
-                                dashBoard.createdAt.desc()       // 최신 순
+                                dashboard.createdAt.asc() :      // 오래된 순
+                                dashboard.createdAt.desc()       // 최신 순
                 ).limit(limit + 1)
                 .fetch();
     }

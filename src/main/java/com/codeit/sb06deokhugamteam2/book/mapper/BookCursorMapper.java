@@ -29,7 +29,7 @@ public class BookCursorMapper {
             hasNext = true;
         }
 
-        String nextCursor = popularBookDtoList.get(popularBookDtoList.size() - 1).rank().toString();
+        String nextCursor = popularBookDtoList.get(popularBookDtoList.size() - 1).rank() + "";
 
         Instant nextAfter = popularBookDtoList.get(popularBookDtoList.size() - 1).createdAt();
 

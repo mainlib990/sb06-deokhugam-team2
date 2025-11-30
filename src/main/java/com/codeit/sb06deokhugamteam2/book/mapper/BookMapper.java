@@ -43,7 +43,7 @@ public class BookMapper {
                 .period(period)
                 .rank(dashboard.getRank())
                 .score(dashboard.getScore())
-                .reviewCount(book.getReviewCount().longValue())
+                .reviewCount(book.getReviewCount())
                 .rating(book.getRatingSum() / book.getReviewCount())
                 .createdAt(dashboard.getCreatedAt())
                 .build();
