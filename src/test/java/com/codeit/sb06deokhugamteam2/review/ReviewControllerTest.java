@@ -43,7 +43,7 @@ class ReviewControllerTest {
         final var userId = "3fa85f64-5717-4562-b3fc-2c963f66afa6";
         final var content = "리뷰입니다.";
         final var rating = 5;
-        var request = new ReviewCreateRequest(UUID.fromString(bookId), UUID.fromString(userId), content, rating);
+        var request = new ReviewCreateRequest(bookId, userId, content, rating);
         Instant now = Instant.now();
 
         MvcTestResult result = mockMvc.post()
