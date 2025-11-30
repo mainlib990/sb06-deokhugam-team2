@@ -1,6 +1,6 @@
 package com.codeit.sb06deokhugamteam2.dashboard.repository;
 
-import com.codeit.sb06deokhugamteam2.dashboard.entity.DashBoard;
+import com.codeit.sb06deokhugamteam2.dashboard.entity.Dashboard;
 import com.codeit.sb06deokhugamteam2.common.enums.PeriodType;
 import com.codeit.sb06deokhugamteam2.common.enums.RankingType;
 import org.springframework.data.domain.Sort;
@@ -8,9 +8,9 @@ import org.springframework.data.domain.Sort;
 import java.time.Instant;
 import java.util.List;
 
-public interface DashBoardRepositoryCustom {
+public interface DashboardRepositoryCustom {
 
-    List<DashBoard> findPopularBookListByCursor(
+    List<Dashboard> findPopularBookListByCursor(
             RankingType rankingType,
             PeriodType period,
             String cursor,

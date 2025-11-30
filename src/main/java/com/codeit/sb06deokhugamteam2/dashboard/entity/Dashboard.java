@@ -20,7 +20,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class DashBoard {
+public class Dashboard {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -39,7 +39,7 @@ public class DashBoard {
 
     @Builder.Default
     @Column(nullable = false)
-    private Long rank = 0L;
+    private long rank = 0L;
 
     @Builder.Default
     @Column(nullable = false)

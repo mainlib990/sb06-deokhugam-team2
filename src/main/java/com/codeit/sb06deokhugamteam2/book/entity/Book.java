@@ -53,7 +53,7 @@ public class Book {
 
     @Builder.Default    // 빌더 사용 시 기본값 설정
     @Column(nullable = false, name = "review_count")
-    private Integer reviewCount = 0;
+    private int reviewCount = 0;
 
     @Builder.Default
     @Column(nullable = false, name = "rating_sum")
