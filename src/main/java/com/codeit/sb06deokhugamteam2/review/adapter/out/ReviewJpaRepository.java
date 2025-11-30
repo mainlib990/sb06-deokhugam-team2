@@ -5,6 +5,7 @@ import com.codeit.sb06deokhugamteam2.review.adapter.out.entity.Review;
 import com.codeit.sb06deokhugamteam2.review.application.dto.ReviewDetail;
 import com.codeit.sb06deokhugamteam2.review.application.dto.ReviewSummary;
 import com.codeit.sb06deokhugamteam2.review.application.port.in.query.ReviewPaginationQuery;
+import com.codeit.sb06deokhugamteam2.review.application.port.in.query.ReviewQuery;
 import com.codeit.sb06deokhugamteam2.review.application.port.out.ReviewRepository;
 import com.codeit.sb06deokhugamteam2.review.domain.ReviewDomain;
 import com.codeit.sb06deokhugamteam2.user.entity.User;
@@ -193,5 +194,33 @@ public class ReviewJpaRepository implements ReviewRepository {
         orderSpecifiers.add(orderByExpression);
 
         return orderSpecifiers.toArray(OrderSpecifier[]::new);
+    }
+
+    @Override
+    public ReviewDetail findReviewDetail(ReviewQuery query) {
+        return select(Projections.constructor(
+                ReviewDetail.class,
+                review.id,
+                review.book.id,
+                book.title,
+                book.thumbnailUrl,
+                review.user.id,
+                user.nickname,
+                review.content,
+                review.rating,
+                review.likeCount,
+                review.commentCount,
+                likedByMe(query.requestUserId()),
+                review.createdAt,
+                review.updatedAt
+        ))
+                .from(review)
+                .innerJoin(review.book, book)
+                .innerJoin(review.user, user)
+                .where(
+                        review.id.eq(query.reviewId()),
+                        review.deleted.eq(false)
+                )
+                .fetchOne();
     }
 }

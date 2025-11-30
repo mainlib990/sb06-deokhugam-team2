@@ -5,6 +5,7 @@ import com.codeit.sb06deokhugamteam2.review.adapter.in.dto.CursorPageResponseRev
 import com.codeit.sb06deokhugamteam2.review.adapter.in.dto.ReviewCreateRequest;
 import com.codeit.sb06deokhugamteam2.review.adapter.in.dto.ReviewDto;
 import com.codeit.sb06deokhugamteam2.review.application.dto.ReviewDetail;
+import com.codeit.sb06deokhugamteam2.review.application.port.in.query.ReviewQuery;
 import com.codeit.sb06deokhugamteam2.review.application.dto.ReviewSummary;
 import com.codeit.sb06deokhugamteam2.review.application.port.in.CreateReviewUseCase;
 import com.codeit.sb06deokhugamteam2.review.application.port.in.GetReviewQuery;
@@ -58,6 +59,23 @@ public class ReviewController implements ReviewApi {
         ReviewPaginationQuery query = reviewMapper.toReviewPaginationQuery(request, header);
         ReviewSummary summary = getReviewQuery.readReviews(query);
         CursorPageResponseReviewDto response = reviewMapper.toReviewSummaryResponse(summary);
+        return ResponseEntity.ok(response);
+    }
+
+    @Override
+    @GetMapping("/{reviewId}")
+    public ResponseEntity<ReviewDto> getReview(
+            @PathVariable(name = "reviewId")
+            @UUID(message = "리뷰 ID는 UUID 형식이어야 합니다.")
+            String request,
+
+            @RequestHeader(value = "Deokhugam-Request-User-ID")
+            @UUID(message = "요청 사용자 ID는 UUID 형식이어야 합니다.")
+            String header
+    ) {
+        ReviewQuery query = reviewMapper.toReviewQuery(request, header);
+        ReviewDetail detail = getReviewQuery.readReview(query);
+        ReviewDto response = reviewMapper.toReviewDetailResponse(detail);
         return ResponseEntity.ok(response);
     }
 }

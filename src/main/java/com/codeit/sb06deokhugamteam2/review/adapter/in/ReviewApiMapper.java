@@ -8,6 +8,7 @@ import com.codeit.sb06deokhugamteam2.review.application.dto.ReviewDetail;
 import com.codeit.sb06deokhugamteam2.review.application.dto.ReviewSummary;
 import com.codeit.sb06deokhugamteam2.review.application.port.in.command.CreateReviewCommand;
 import com.codeit.sb06deokhugamteam2.review.application.port.in.query.ReviewPaginationQuery;
+import com.codeit.sb06deokhugamteam2.review.application.port.in.query.ReviewQuery;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
@@ -101,5 +102,12 @@ public class ReviewApiMapper {
                 totalElements,
                 hasNext
         );
+    }
+
+    public ReviewQuery toReviewQuery(String request, String header) {
+        UUID reviewId = UUID.fromString(request);
+        UUID requestUserId = UUID.fromString(header);
+
+        return new ReviewQuery(reviewId, requestUserId);
     }
 }
