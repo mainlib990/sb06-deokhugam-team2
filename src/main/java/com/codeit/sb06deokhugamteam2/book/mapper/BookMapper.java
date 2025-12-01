@@ -1,7 +1,10 @@
 package com.codeit.sb06deokhugamteam2.book.mapper;
 
 import com.codeit.sb06deokhugamteam2.book.dto.data.BookDto;
+import com.codeit.sb06deokhugamteam2.book.dto.data.PopularBookDto;
 import com.codeit.sb06deokhugamteam2.book.entity.Book;
+import com.codeit.sb06deokhugamteam2.common.enums.PeriodType;
+import com.codeit.sb06deokhugamteam2.dashboard.entity.Dashboard;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -28,5 +31,21 @@ public class BookMapper {
             return ratingSum / reviewCount;
         }
         return 0.0;
+    }
+
+    public PopularBookDto toDto(Dashboard dashboard, Book book, PeriodType period) {
+        return PopularBookDto.builder()
+                .id(dashboard.getId())
+                .bookId(dashboard.getEntityId())
+                .title(book.getTitle())
+                .author(book.getAuthor())
+                .thumbnailUrl(book.getThumbnailUrl())
+                .period(period)
+                .rank(dashboard.getRank())
+                .score(dashboard.getScore())
+                .reviewCount(book.getReviewCount())
+                .rating(book.getRatingSum() / book.getReviewCount())
+                .createdAt(dashboard.getCreatedAt())
+                .build();
     }
 }
