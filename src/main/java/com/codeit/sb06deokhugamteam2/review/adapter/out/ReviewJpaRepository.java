@@ -14,6 +14,7 @@ import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import jakarta.persistence.EntityManager;
@@ -71,15 +72,30 @@ public class ReviewJpaRepository implements ReviewRepository {
 
     @Override
     public ReviewDetail findReviewDetailById(UUID reviewId) {
-        Review found = select(review)
+        return select(Projections.constructor(
+                ReviewDetail.class,
+                review.id,
+                review.book.id,
+                book.title,
+                book.thumbnailUrl,
+                review.user.id,
+                user.nickname,
+                review.content,
+                review.rating,
+                review.likeCount,
+                review.commentCount,
+                Expressions.FALSE,
+                review.createdAt,
+                review.updatedAt
+        ))
                 .from(review)
-                .innerJoin(review.book, book).fetchJoin()
-                .innerJoin(review.user, user).fetchJoin()
-                .innerJoin(review.likes, reviewLike).fetchJoin()
-                .where(review.id.eq(reviewId))
+                .innerJoin(review.book, book)
+                .innerJoin(review.user, user)
+                .where(
+                        review.id.eq(reviewId),
+                        review.deleted.eq(false)
+                )
                 .fetchOne();
-
-        return reviewMapper.toReviewDetail(found);
     }
 
     @Override

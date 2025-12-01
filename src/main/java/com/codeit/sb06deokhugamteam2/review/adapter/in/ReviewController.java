@@ -5,12 +5,12 @@ import com.codeit.sb06deokhugamteam2.review.adapter.in.dto.CursorPageResponseRev
 import com.codeit.sb06deokhugamteam2.review.adapter.in.dto.ReviewCreateRequest;
 import com.codeit.sb06deokhugamteam2.review.adapter.in.dto.ReviewDto;
 import com.codeit.sb06deokhugamteam2.review.application.dto.ReviewDetail;
-import com.codeit.sb06deokhugamteam2.review.application.port.in.query.ReviewQuery;
 import com.codeit.sb06deokhugamteam2.review.application.dto.ReviewSummary;
 import com.codeit.sb06deokhugamteam2.review.application.port.in.CreateReviewUseCase;
 import com.codeit.sb06deokhugamteam2.review.application.port.in.GetReviewQuery;
 import com.codeit.sb06deokhugamteam2.review.application.port.in.command.CreateReviewCommand;
 import com.codeit.sb06deokhugamteam2.review.application.port.in.query.ReviewPaginationQuery;
+import com.codeit.sb06deokhugamteam2.review.application.port.in.query.ReviewQuery;
 import jakarta.validation.Valid;
 import org.hibernate.validator.constraints.UUID;
 import org.springframework.http.HttpStatus;

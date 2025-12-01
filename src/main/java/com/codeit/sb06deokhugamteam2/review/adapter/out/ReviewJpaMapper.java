@@ -9,9 +9,7 @@ import com.codeit.sb06deokhugamteam2.review.domain.ReviewDomain;
 import com.codeit.sb06deokhugamteam2.user.entity.User;
 import org.springframework.stereotype.Component;
 
-import java.time.Instant;
 import java.util.List;
-import java.util.UUID;
 
 @Component
 public class ReviewJpaMapper {
@@ -29,38 +27,6 @@ public class ReviewJpaMapper {
                 .createdAt(snapshot.createdAt())
                 .updatedAt(snapshot.updatedAt())
                 .deleted(snapshot.deleted());
-    }
-
-    public ReviewDetail toReviewDetail(Review review) {
-        UUID id = review.id();
-        UUID bookId = review.book().getId();
-        String bookTitle = review.book().getTitle();
-        String bookThumbnailUrl = review.book().getThumbnailUrl();
-        UUID userId = review.user().getId();
-        String userNickname = review.user().getNickname();
-        String content = review.content();
-        Integer rating = review.rating();
-        Integer likeCount = review.likeCount();
-        Integer commentCount = review.commentCount();
-        Boolean likedByMe = review.likes().contains(userId);
-        Instant createdAt = review.createdAt();
-        Instant updatedAt = review.updatedAt();
-
-        return new ReviewDetail(
-                id,
-                bookId,
-                bookTitle,
-                bookThumbnailUrl,
-                userId,
-                userNickname,
-                content,
-                rating,
-                likeCount,
-                commentCount,
-                likedByMe,
-                createdAt,
-                updatedAt
-        );
     }
 
     public ReviewSummary toReviewSummary(
