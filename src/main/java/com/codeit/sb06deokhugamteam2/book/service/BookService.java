@@ -5,6 +5,7 @@ import com.codeit.sb06deokhugamteam2.book.dto.request.BookCreateRequest;
 import com.codeit.sb06deokhugamteam2.book.dto.data.BookDto;
 import com.codeit.sb06deokhugamteam2.book.dto.request.BookImageCreateRequest;
 import com.codeit.sb06deokhugamteam2.book.dto.request.BookUpdateRequest;
+import com.codeit.sb06deokhugamteam2.book.dto.response.CursorPageResponseBookDto;
 import com.codeit.sb06deokhugamteam2.book.dto.response.NaverBookDto;
 import com.codeit.sb06deokhugamteam2.book.entity.Book;
 import com.codeit.sb06deokhugamteam2.book.mapper.BookMapper;
@@ -15,10 +16,13 @@ import com.codeit.sb06deokhugamteam2.common.exception.exceptions.BookException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -99,6 +103,26 @@ public class BookService {
         return bookMapper.toDto(findBook);
     }
 
+    public CursorPageResponseBookDto findBooks(String keyword, String orderBy,
+                                               String direction, String cursor, Instant nextAfter, int limit) {
+        long totalElements =
+                keyword == null ? bookRepository.count() : bookRepository.countByKeyword(keyword);
+
+        Slice<Book> bookSlice = bookRepository.findBooks(keyword, orderBy, direction, cursor, nextAfter, limit);
+        Slice<BookDto> bookDtoSlice = bookSlice.map(bookMapper::toDto);
+
+        CursorPageResponseBookDto cursorPageResponseBookDto = CursorPageResponseBookDto.builder()
+                .size(bookDtoSlice.getContent().size())
+                .hasNext(bookDtoSlice.hasNext())
+                .content(bookDtoSlice.getContent())
+                .totalElements(totalElements)
+                .nextCursor(getNextCursor(bookDtoSlice, orderBy))
+                .nextAfter(getNextAfter(bookDtoSlice))
+                .build();
+
+        return cursorPageResponseBookDto;
+    }
+
     public void deleteSoft(UUID bookId) {
         Book book = bookRepository.findById(bookId)
                 .orElseThrow(() -> new EntityNotFoundException("도서를 찾을 수 없습니다: " + bookId));
@@ -116,5 +140,27 @@ public class BookService {
     public void deleteHard(UUID bookId) {
         bookRepository.deleteById(bookId);
         log.info("도서 물리 삭제 완료: {}", bookId);
+    }
+
+    private String getNextCursor(Slice<BookDto> bookDtoSlice, String orderBy) {
+        if (bookDtoSlice.getContent().isEmpty()) {
+            return null;
+        }
+        List<BookDto> bookDtos = bookDtoSlice.getContent();
+        BookDto bookDto = bookDtos.get(bookDtos.size() - 1);
+        return switch (orderBy) {
+            case "publishedDate" -> bookDto.getPublishedDate().toString();
+            case "rating" -> Double.toString(bookDto.getRating());
+            case "reviewCount" -> Integer.toString(bookDto.getReviewCount());
+            default -> bookDto.getTitle();
+        };
+    }
+
+    private Instant getNextAfter(Slice<BookDto> bookDtoSlice) {
+        if (bookDtoSlice.getContent().isEmpty()) {
+            return null;
+        }
+        List<BookDto> bookDtos = bookDtoSlice.getContent();
+        return bookDtos.get(bookDtos.size() - 1).getCreatedAt();
     }
 }
