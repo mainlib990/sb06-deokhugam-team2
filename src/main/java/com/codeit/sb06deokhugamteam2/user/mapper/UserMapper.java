@@ -16,9 +16,9 @@ public interface UserMapper {
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "deleted", ignore = true)
     @Mapping(target = "deletedAt", ignore = true)
-    /*@Mapping(target = "reviews", ignore = true)
+    @Mapping(target = "reviews", ignore = true)
     @Mapping(target = "comments", ignore = true)
-    @Mapping(target = "reviewLikes", ignore = true)*/
+    @Mapping(target = "reviewLikes", ignore = true)
     User toEntity(UserRegisterRequest request);
 
     UserDto toDto(User user);
