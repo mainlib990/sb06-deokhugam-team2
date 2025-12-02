@@ -88,6 +88,13 @@ public class BookService {
                         HttpStatus.NOT_FOUND
                 )
         );
+        if (findBook.isDeleted()) {
+            throw new BookException(
+                    ErrorCode.NO_ID_VARIABLE,
+                    Map.of("bookId", bookId),
+                    HttpStatus.NOT_FOUND
+            );
+        }
 
         String thumbnailUrl = optionalBookImageCreateRequest.map(bookImageCreateRequest -> {
             if (findBook.getThumbnailUrl() != null) {
@@ -100,9 +107,7 @@ public class BookService {
             return s3Storage.getThumbnail(newKey);
         }).orElseGet(() -> {
             if (findBook.getThumbnailUrl() != null) {
-                String url = findBook.getThumbnailUrl();
-                String oldKey = url.substring(url.lastIndexOf("/") + 1);
-                s3Storage.deleteThumbnail(oldKey);
+                return findBook.getThumbnailUrl();
             }
             return null;
         });
@@ -118,6 +123,7 @@ public class BookService {
 
         return bookMapper.toDto(findBook);
     }
+
     @Transactional(readOnly = true)
     public CursorPageResponseBookDto findBooks(String keyword, String orderBy,
                                                String direction, String cursor, Instant nextAfter, int limit) {
