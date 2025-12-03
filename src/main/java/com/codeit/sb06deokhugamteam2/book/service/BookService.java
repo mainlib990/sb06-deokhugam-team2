@@ -173,7 +173,11 @@ public class BookService {
 
         bookDashboard.forEach(dashboard -> {
             Book book = bookRepository.findById(dashboard.getEntityId())
-                    .orElseThrow(() -> new EntityNotFoundException("도서를 찾을 수 없습니다: " + dashboard.getEntityId()));
+                    .orElseThrow(() -> new BookException(
+                            ErrorCode.NO_ID_VARIABLE,
+                            Map.of("bookId", dashboard.getEntityId()),
+                            HttpStatus.NOT_FOUND)
+                    );
             popularBookDtoList.add(
                     bookMapper.toDto(dashboard, book, period)
             );
