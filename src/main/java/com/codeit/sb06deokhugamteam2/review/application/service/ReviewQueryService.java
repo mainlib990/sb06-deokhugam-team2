@@ -16,10 +16,10 @@ import java.util.UUID;
 @Transactional(readOnly = true)
 public class ReviewQueryService implements GetReviewUseCase {
 
-    private final ReviewRepositoryPort reviewRepositoryPort;
+    private final ReviewRepositoryPort reviewRepository;
 
-    public ReviewQueryService(ReviewRepositoryPort reviewRepositoryPort) {
-        this.reviewRepositoryPort = reviewRepositoryPort;
+    public ReviewQueryService(ReviewRepositoryPort reviewRepository) {
+        this.reviewRepository = reviewRepository;
     }
 
     @Override
@@ -31,12 +31,12 @@ public class ReviewQueryService implements GetReviewUseCase {
         Integer limit = query.limit();
         String orderBy = query.orderBy();
 
-        List<ReviewDto> reviews = reviewRepositoryPort.findAll(query, requestUserId);
+        List<ReviewDto> reviews = reviewRepository.findAll(query, requestUserId);
         List<ReviewDto> content = extractContent(reviews, limit);
         String nextCursor = extractNextCursor(reviews, limit, orderBy);
         String nextAfter = extractNextAfter(reviews, limit);
         Integer size = content.size();
-        Long totalElements = reviewRepositoryPort.count(userId, bookId, keyword);
+        Long totalElements = reviewRepository.count(userId, bookId, keyword);
         Boolean hasNext = calculateHasNext(reviews, limit);
 
         return new CursorPageResponseReviewDto(
@@ -93,7 +93,7 @@ public class ReviewQueryService implements GetReviewUseCase {
         UUID reviewId = UUID.fromString(path);
         UUID requestUserId = UUID.fromString(header);
 
-        return reviewRepositoryPort.findById(reviewId, requestUserId)
+        return reviewRepository.findById(reviewId, requestUserId)
                 .orElseThrow(() -> new ReviewNotFoundException(reviewId));
     }
 }
