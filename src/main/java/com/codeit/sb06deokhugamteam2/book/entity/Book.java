@@ -50,8 +50,7 @@ public class Book {
     @Column(nullable = true, name = "thumbnail_url")
     private String thumbnailUrl;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "book_id", referencedColumnName = "id")
+    @OneToOne(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
     private BookStats bookStats;
 
     @Builder.Default

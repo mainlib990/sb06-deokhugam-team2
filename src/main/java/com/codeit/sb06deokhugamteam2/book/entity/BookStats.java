@@ -1,9 +1,6 @@
 package com.codeit.sb06deokhugamteam2.book.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.UUID;
@@ -17,6 +14,10 @@ import java.util.UUID;
 public class BookStats {
     @Id
     private UUID bookId;
+
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "book_id")
+    private Book book;
 
     @Setter
     @Builder.Default    // 빌더 사용 시 기본값 설정
