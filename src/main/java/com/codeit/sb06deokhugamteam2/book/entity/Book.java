@@ -50,15 +50,9 @@ public class Book {
     @Column(nullable = true, name = "thumbnail_url")
     private String thumbnailUrl;
 
-    @Setter
-    @Builder.Default    // 빌더 사용 시 기본값 설정
-    @Column(nullable = false, name = "review_count")
-    private int reviewCount = 0;
-
-    @Setter
-    @Builder.Default
-    @Column(nullable = false, name = "rating_sum")
-    private int ratingSum = 0;
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "book_id", referencedColumnName = "id")
+    private BookStats bookStats;
 
     @Builder.Default
     @OneToMany(
