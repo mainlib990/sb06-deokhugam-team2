@@ -186,8 +186,7 @@ public class BookService {
         return bookCursorMapper.toCursorBookDto(popularBookDtoList, limit);
     }
 
-    // 트랜잭션 사용 안함
-    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    @Transactional(readOnly = true)
     public String getIsbnByOcrApi(MultipartFile image) {
 
         // 무료버전 OCR API는 1MB 이하의 파일만 처리 가능
