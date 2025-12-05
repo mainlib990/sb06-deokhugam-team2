@@ -5,9 +5,7 @@ import com.codeit.sb06deokhugamteam2.review.domain.ReviewBookDomain;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface ReviewBookRepositoryPort {
+public interface LoadReviewBookRepositoryPort {
 
     Optional<ReviewBookDomain> findByIdForUpdate(UUID bookId);
-
-    void update(ReviewBookDomain book);
 }

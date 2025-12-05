@@ -1,7 +1,8 @@
 package com.codeit.sb06deokhugamteam2.review.adapter.out;
 
 import com.codeit.sb06deokhugamteam2.book.entity.BookStats;
-import com.codeit.sb06deokhugamteam2.review.application.port.out.ReviewBookRepositoryPort;
+import com.codeit.sb06deokhugamteam2.review.application.port.out.LoadReviewBookRepositoryPort;
+import com.codeit.sb06deokhugamteam2.review.application.port.out.SaveReviewBookRepositoryPort;
 import com.codeit.sb06deokhugamteam2.review.domain.ReviewBookDomain;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
@@ -12,7 +13,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public class ReviewBookJpaRepositoryAdapter implements ReviewBookRepositoryPort {
+public class ReviewBookJpaRepositoryAdapter implements LoadReviewBookRepositoryPort, SaveReviewBookRepositoryPort {
 
     @PersistenceContext
     private EntityManager em;

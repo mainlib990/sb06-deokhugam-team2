@@ -5,7 +5,8 @@ import com.codeit.sb06deokhugamteam2.review.adapter.out.entity.QReview;
 import com.codeit.sb06deokhugamteam2.review.adapter.out.entity.Review;
 import com.codeit.sb06deokhugamteam2.review.application.dto.CursorPageRequestReviewDto;
 import com.codeit.sb06deokhugamteam2.review.application.dto.ReviewDto;
-import com.codeit.sb06deokhugamteam2.review.application.port.out.ReviewRepositoryPort;
+import com.codeit.sb06deokhugamteam2.review.application.port.out.LoadReviewRepositoryPort;
+import com.codeit.sb06deokhugamteam2.review.application.port.out.SaveReviewRepositoryPort;
 import com.codeit.sb06deokhugamteam2.review.domain.ReviewDomain;
 import com.codeit.sb06deokhugamteam2.user.entity.User;
 import com.querydsl.core.types.*;
@@ -31,7 +32,7 @@ import static com.codeit.sb06deokhugamteam2.review.adapter.out.entity.QReviewSta
 import static com.codeit.sb06deokhugamteam2.user.entity.QUser.user;
 
 @Repository
-public class ReviewJpaRepositoryAdapter implements ReviewRepositoryPort {
+public class ReviewJpaRepositoryAdapter implements LoadReviewRepositoryPort, SaveReviewRepositoryPort {
 
     @PersistenceContext
     private EntityManager em;

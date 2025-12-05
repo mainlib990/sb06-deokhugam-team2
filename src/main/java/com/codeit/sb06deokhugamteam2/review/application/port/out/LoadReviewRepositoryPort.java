@@ -8,11 +8,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface ReviewRepositoryPort {
+public interface LoadReviewRepositoryPort {
 
     boolean existsByBookIdAndUserId(UUID bookId, UUID userId);
-
-    void save(ReviewDomain review);
 
     Optional<ReviewDto> findById(UUID reviewId, UUID requestUserId);
 
@@ -22,11 +20,5 @@ public interface ReviewRepositoryPort {
 
     Optional<ReviewDomain> findById(UUID reviewId);
 
-    void softDelete(ReviewDomain review);
-
     Optional<ReviewDomain> findByIdWithoutDeleted(UUID reviewId);
-
-    void hardDelete(ReviewDomain review);
-
-    void update(ReviewDomain review);
 }
