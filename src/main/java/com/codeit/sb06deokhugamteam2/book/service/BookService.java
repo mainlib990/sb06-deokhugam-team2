@@ -24,7 +24,6 @@ import com.codeit.sb06deokhugamteam2.dashboard.entity.Dashboard;
 import com.codeit.sb06deokhugamteam2.dashboard.repository.DashboardRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
@@ -97,17 +96,11 @@ public class BookService {
     }
 
     public BookDto update(UUID bookId, BookUpdateRequest bookUpdateRequest, Optional<BookImageCreateRequest> optionalBookImageCreateRequest) {
-        Optional<Book> findBookOptional = bookRepository.findById(bookId);
-
-        if (findBookOptional.isEmpty()) {
-            throw new BookException(
-                    ErrorCode.NO_ID_VARIABLE,
-                    Map.of("bookId", bookId),
-                    HttpStatus.NOT_FOUND
-            );
-        }
-
-        Book findBook = findBookOptional.get();
+        Book findBook = bookRepository.findById(bookId)
+                .orElseThrow(() -> new BookException(
+                        ErrorCode.NO_ID_VARIABLE,
+                        Map.of("bookId", bookId),
+                        HttpStatus.NOT_FOUND));
 
         String thumbnailUrl = optionalBookImageCreateRequest.map(bookImageCreateRequest -> {
             if (findBook.getThumbnailUrl() != null) {
