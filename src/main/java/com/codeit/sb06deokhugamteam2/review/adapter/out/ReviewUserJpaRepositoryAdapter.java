@@ -4,13 +4,11 @@ import com.codeit.sb06deokhugamteam2.review.application.port.out.ReviewUserRepos
 import com.codeit.sb06deokhugamteam2.user.entity.User;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Repository;
 
 import java.util.UUID;
 
-@Component
-@Transactional(readOnly = true)
+@Repository
 public class ReviewUserJpaRepositoryAdapter implements ReviewUserRepositoryPort {
 
     @PersistenceContext

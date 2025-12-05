@@ -46,16 +46,16 @@ public class ReviewCommandService implements CreateReviewUseCase, UpdateReviewUs
         UUID userId = UUID.fromString(requestBody.userId());
         var rating = new ReviewRating(requestBody.rating());
         var content = new ReviewContent(requestBody.content());
-
         ReviewDomain review = ReviewDomain.create(bookId, userId, rating, content);
-        ReviewBookDomain book = bookRepository.findById(bookId)
-                .orElseThrow(() -> new ReviewBookNotFoundException(bookId));
+
         if (!userRepository.existsById(userId)) {
             throw new ReviewUserNotFoundException(userId);
         }
         if (reviewRepository.existsByBookIdAndUserId(bookId, userId)) {
             throw new AlreadyExistsReviewException(bookId);
         }
+        ReviewBookDomain book = bookRepository.findByIdForUpdate(bookId)
+                .orElseThrow(() -> new ReviewBookNotFoundException(bookId));
         reviewService.registerReview(review, book);
         reviewRepository.save(review);
         bookRepository.update(book);
@@ -71,7 +71,7 @@ public class ReviewCommandService implements CreateReviewUseCase, UpdateReviewUs
 
         ReviewDomain review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new ReviewNotFoundException(reviewId));
-        ReviewBookDomain book = bookRepository.findById(review.bookId())
+        ReviewBookDomain book = bookRepository.findByIdForUpdate(review.bookId())
                 .orElseThrow(() -> new ReviewBookNotFoundException(review.bookId()));
         reviewService.deleteReview(review, requestUserId, book);
         reviewRepository.softDelete(review);
@@ -85,7 +85,7 @@ public class ReviewCommandService implements CreateReviewUseCase, UpdateReviewUs
 
         ReviewDomain review = reviewRepository.findByIdWithoutDeleted(reviewId)
                 .orElseThrow(() -> new ReviewNotFoundException(reviewId));
-        ReviewBookDomain book = bookRepository.findById(review.bookId())
+        ReviewBookDomain book = bookRepository.findByIdForUpdate(review.bookId())
                 .orElseThrow(() -> new ReviewBookNotFoundException(review.bookId()));
         reviewService.deleteReview(review, requestUserId, book);
         reviewRepository.hardDelete(review);
@@ -101,7 +101,7 @@ public class ReviewCommandService implements CreateReviewUseCase, UpdateReviewUs
 
         ReviewDomain review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new ReviewNotFoundException(reviewId));
-        ReviewBookDomain book = bookRepository.findById(review.bookId())
+        ReviewBookDomain book = bookRepository.findByIdForUpdate(review.bookId())
                 .orElseThrow(() -> new ReviewBookNotFoundException(review.bookId()));
         reviewService.editReview(review, newRating, newContent, requestUserId, book);
         reviewRepository.update(review);

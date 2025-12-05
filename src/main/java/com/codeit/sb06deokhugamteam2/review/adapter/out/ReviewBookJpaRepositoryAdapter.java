@@ -4,23 +4,22 @@ import com.codeit.sb06deokhugamteam2.book.entity.BookStats;
 import com.codeit.sb06deokhugamteam2.review.application.port.out.ReviewBookRepositoryPort;
 import com.codeit.sb06deokhugamteam2.review.domain.ReviewBookDomain;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.LockModeType;
 import jakarta.persistence.PersistenceContext;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 import java.util.UUID;
 
-@Component
-@Transactional(readOnly = true)
+@Repository
 public class ReviewBookJpaRepositoryAdapter implements ReviewBookRepositoryPort {
 
     @PersistenceContext
     private EntityManager em;
 
     @Override
-    public Optional<ReviewBookDomain> findById(UUID bookId) {
-        BookStats bookStatsEntity = em.find(BookStats.class, bookId);
+    public Optional<ReviewBookDomain> findByIdForUpdate(UUID bookId) {
+        BookStats bookStatsEntity = em.find(BookStats.class, bookId, LockModeType.PESSIMISTIC_WRITE);
         if (bookStatsEntity == null) {
             return Optional.empty();
         }
@@ -34,7 +33,6 @@ public class ReviewBookJpaRepositoryAdapter implements ReviewBookRepositoryPort 
     }
 
     @Override
-    @Transactional
     public void update(ReviewBookDomain book) {
         BookStats bookStatsEntity = em.find(BookStats.class, book.id());
         bookStatsEntity.setReviewCount(book.reviewCount());

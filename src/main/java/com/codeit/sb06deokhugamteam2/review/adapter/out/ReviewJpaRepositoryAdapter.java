@@ -17,7 +17,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -32,7 +31,6 @@ import static com.codeit.sb06deokhugamteam2.review.adapter.out.entity.QReviewSta
 import static com.codeit.sb06deokhugamteam2.user.entity.QUser.user;
 
 @Repository
-@Transactional(readOnly = true)
 public class ReviewJpaRepositoryAdapter implements ReviewRepositoryPort {
 
     @PersistenceContext
@@ -61,7 +59,6 @@ public class ReviewJpaRepositoryAdapter implements ReviewRepositoryPort {
     }
 
     @Override
-    @Transactional
     public void save(ReviewDomain review) {
         Review reviewEntity = reviewMapper.toEntity(review.toSnapshot());
         Book book = em.getReference(Book.class, review.bookId());
@@ -252,7 +249,6 @@ public class ReviewJpaRepositoryAdapter implements ReviewRepositoryPort {
     }
 
     @Override
-    @Transactional
     public void softDelete(ReviewDomain review) {
         Review reviewEntity = em.getReference(Review.class, review.id());
         em.remove(reviewEntity);
@@ -271,7 +267,6 @@ public class ReviewJpaRepositoryAdapter implements ReviewRepositoryPort {
     }
 
     @Override
-    @Transactional
     public void hardDelete(ReviewDomain review) {
         em.createNativeQuery("DELETE FROM reviews r WHERE r.id = :reviewId")
                 .setParameter("reviewId", review.id())
@@ -279,7 +274,6 @@ public class ReviewJpaRepositoryAdapter implements ReviewRepositoryPort {
     }
 
     @Override
-    @Transactional
     public void update(ReviewDomain review) {
         ReviewDomain.Snapshot reviewSnapshot = review.toSnapshot();
         Review reviewEntity = em.find(Review.class, reviewSnapshot.id());

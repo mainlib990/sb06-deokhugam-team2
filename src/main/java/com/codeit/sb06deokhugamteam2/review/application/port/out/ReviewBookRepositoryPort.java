@@ -7,7 +7,7 @@ import java.util.UUID;
 
 public interface ReviewBookRepositoryPort {
 
-    Optional<ReviewBookDomain> findById(UUID bookId);
+    Optional<ReviewBookDomain> findByIdForUpdate(UUID bookId);
 
     void update(ReviewBookDomain book);
 }
