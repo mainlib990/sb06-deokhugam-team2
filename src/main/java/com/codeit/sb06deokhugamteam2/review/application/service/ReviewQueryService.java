@@ -1,8 +1,8 @@
 package com.codeit.sb06deokhugamteam2.review.application.service;
 
-import com.codeit.sb06deokhugamteam2.review.application.dto.CursorPageRequestReviewDto;
-import com.codeit.sb06deokhugamteam2.review.application.dto.CursorPageResponseReviewDto;
-import com.codeit.sb06deokhugamteam2.review.application.dto.ReviewDto;
+import com.codeit.sb06deokhugamteam2.review.application.dto.request.CursorPageRequestReviewDto;
+import com.codeit.sb06deokhugamteam2.review.application.dto.response.CursorPageResponseReviewDto;
+import com.codeit.sb06deokhugamteam2.review.application.dto.response.ReviewDto;
 import com.codeit.sb06deokhugamteam2.review.application.port.in.GetReviewUseCase;
 import com.codeit.sb06deokhugamteam2.review.application.port.out.LoadReviewRepositoryPort;
 import com.codeit.sb06deokhugamteam2.review.domain.exception.ReviewNotFoundException;

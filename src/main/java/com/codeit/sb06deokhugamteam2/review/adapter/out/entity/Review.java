@@ -1,6 +1,7 @@
 package com.codeit.sb06deokhugamteam2.review.adapter.out.entity;
 
 import com.codeit.sb06deokhugamteam2.book.entity.Book;
+import com.codeit.sb06deokhugamteam2.like.adapter.out.entity.ReviewLike;
 import com.codeit.sb06deokhugamteam2.user.entity.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;

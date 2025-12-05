@@ -1,7 +1,7 @@
 package com.codeit.sb06deokhugamteam2.review.application.port.in;
 
-import com.codeit.sb06deokhugamteam2.review.application.dto.ReviewDto;
-import com.codeit.sb06deokhugamteam2.review.application.dto.ReviewUpdateRequest;
+import com.codeit.sb06deokhugamteam2.review.application.dto.response.ReviewDto;
+import com.codeit.sb06deokhugamteam2.review.application.dto.request.ReviewUpdateRequest;
 
 public interface UpdateReviewUseCase {
 

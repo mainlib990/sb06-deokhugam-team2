@@ -1,6 +1,13 @@
 package com.codeit.sb06deokhugamteam2.review.adapter.in;
 
-import com.codeit.sb06deokhugamteam2.review.application.dto.*;
+import com.codeit.sb06deokhugamteam2.like.adapter.in.ReviewLikeApi;
+import com.codeit.sb06deokhugamteam2.like.application.dto.response.ReviewLikeDto;
+import com.codeit.sb06deokhugamteam2.like.application.port.in.ToggleReviewLikeUseCase;
+import com.codeit.sb06deokhugamteam2.review.application.dto.request.CursorPageRequestReviewDto;
+import com.codeit.sb06deokhugamteam2.review.application.dto.request.ReviewCreateRequest;
+import com.codeit.sb06deokhugamteam2.review.application.dto.request.ReviewUpdateRequest;
+import com.codeit.sb06deokhugamteam2.review.application.dto.response.CursorPageResponseReviewDto;
+import com.codeit.sb06deokhugamteam2.review.application.dto.response.ReviewDto;
 import com.codeit.sb06deokhugamteam2.review.application.port.in.CreateReviewUseCase;
 import com.codeit.sb06deokhugamteam2.review.application.port.in.DeleteReviewUseCase;
 import com.codeit.sb06deokhugamteam2.review.application.port.in.GetReviewUseCase;
@@ -12,23 +19,26 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/api/reviews")
-public class ReviewController implements ReviewApi {
+public class ReviewController implements ReviewApi, ReviewLikeApi {
 
     private final CreateReviewUseCase createReviewUseCase;
     private final GetReviewUseCase getReviewUseCase;
     private final DeleteReviewUseCase deleteReviewUseCase;
     private final UpdateReviewUseCase updateReviewUseCase;
+    private final ToggleReviewLikeUseCase toggleReviewLikeUseCase;
 
     public ReviewController(
             CreateReviewUseCase createReviewUseCase,
             GetReviewUseCase getReviewUseCase,
             DeleteReviewUseCase deleteReviewUseCase,
-            UpdateReviewUseCase updateReviewUseCase
+            UpdateReviewUseCase updateReviewUseCase,
+            ToggleReviewLikeUseCase toggleReviewLikeUseCase
     ) {
         this.createReviewUseCase = createReviewUseCase;
         this.getReviewUseCase = getReviewUseCase;
         this.deleteReviewUseCase = deleteReviewUseCase;
         this.updateReviewUseCase = updateReviewUseCase;
+        this.toggleReviewLikeUseCase = toggleReviewLikeUseCase;
     }
 
     @Override
@@ -95,6 +105,7 @@ public class ReviewController implements ReviewApi {
             @PathVariable(name = "reviewId") String path,
             @RequestHeader(name = "Deokhugam-Request-User-ID") String header
     ) {
-        throw new RuntimeException("Not Implemented");
+        ReviewLikeDto response = toggleReviewLikeUseCase.toggleReviewLike(path, header);
+        return ResponseEntity.ok(response);
     }
 }
