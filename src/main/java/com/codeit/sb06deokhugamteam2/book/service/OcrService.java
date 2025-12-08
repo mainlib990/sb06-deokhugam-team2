@@ -21,6 +21,7 @@ import java.util.regex.Pattern;
 public class OcrService {
 
     private final ObjectMapper objectMapper;
+    private final OkHttpClient okHttpClient;
 
     @Value("${spring.ocr.api-key}")
     private String ocrApiKey;
@@ -84,10 +85,7 @@ public class OcrService {
                 .post(requestBody)
                 .build();
 
-        // todo OkHttpClient를 빈으로 등록해서 재사용하도록 변경하기
-        OkHttpClient client = new OkHttpClient();
-
-        try (Response response = client.newCall(request).execute()) {
+        try (Response response = okHttpClient.newCall(request).execute()) {
             return response.body().string();
         } catch (IOException e) {
             throw new OcrException(ErrorCode.OCR_API_ERROR,

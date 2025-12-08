@@ -21,7 +21,6 @@ import com.codeit.sb06deokhugamteam2.common.exception.ErrorCode;
 import com.codeit.sb06deokhugamteam2.common.exception.exceptions.BookException;
 import com.codeit.sb06deokhugamteam2.dashboard.entity.Dashboard;
 import com.codeit.sb06deokhugamteam2.dashboard.repository.DashboardRepository;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Slice;
@@ -29,6 +28,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.Instant;
 import java.util.*;
@@ -45,6 +45,7 @@ public class BookService {
     private final BookMapper bookMapper;
     private final BookCursorMapper bookCursorMapper;
     private final NaverSearchClient naverSearchClient;
+    private final OcrService ocrService;
 
     public BookDto create(BookCreateRequest bookCreateRequest, Optional<BookImageCreateRequest> optionalBookImageCreateRequest) {
         if (bookRepository.findByIsbn(bookCreateRequest.getIsbn()).isPresent()) {
@@ -137,6 +138,10 @@ public class BookService {
                 .build();
 
         return cursorPageResponseBookDto;
+    }
+
+    public String getIsbnByOcrApi(MultipartFile image) {
+        return ocrService.getIsbnByOcrApi(image);
     }
 
     @Transactional(readOnly = true)

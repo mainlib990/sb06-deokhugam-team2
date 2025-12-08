@@ -29,7 +29,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class BookController {
     private final BookService bookService;
-    private final OcrService ocrService;
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<BookDto> create(
@@ -96,7 +95,7 @@ public class BookController {
     public ResponseEntity<String> getIsbnByOcr(
             @RequestParam MultipartFile image
     ) {
-        String isbn = ocrService.getIsbnByOcrApi(image);
+        String isbn = bookService.getIsbnByOcrApi(image);
         return ResponseEntity.ok(isbn);
     }
 
