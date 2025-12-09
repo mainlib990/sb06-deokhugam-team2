@@ -149,19 +149,19 @@ public class ReviewCommandService
     @Override
     public ReviewLikeDto toggleReviewLike(String path, String header) {
         UUID reviewId = UUID.fromString(path);
-        UUID userId = UUID.fromString(header);
+        UUID requestUserId = UUID.fromString(header);
 
         ReviewDomain review = saveReviewPort.findByIdForUpdate(reviewId)
                 .map(ReviewDomain::from)
                 .orElseThrow(() -> new ReviewNotFoundException(reviewId));
-        ReviewUserDomain user = saveUserPort.findById(userId)
-                .orElseThrow(() -> new ReviewUserNotFoundException(userId));
-        ReviewLikeDomain reviewLike = loadLikePort.findById(reviewId, userId)
-                .orElseGet(() -> new ReviewLikeDomain(reviewId, userId, false));
+        ReviewUserDomain user = saveUserPort.findById(requestUserId)
+                .orElseThrow(() -> new ReviewUserNotFoundException(requestUserId));
+        ReviewLikeDomain reviewLike = loadLikePort.findById(reviewId, requestUserId)
+                .orElseGet(() -> new ReviewLikeDomain(reviewId, requestUserId, false));
         reviewService.toggleReviewLike(review, reviewLike);
         saveReviewPort.update(review.toSnapshot());
         ReviewLikeNotificationDomain notification = ReviewLikeNotificationDomain.create(
-                reviewId, user.id(), review.content().value(), user.nickname());
+                reviewId, review.id(), review.content().value(), user.nickname());
         saveReviewNotificationPort.sendNotification(notification);
         review.events().forEach(eventPublisher::publish);
         review.clearEvents();
