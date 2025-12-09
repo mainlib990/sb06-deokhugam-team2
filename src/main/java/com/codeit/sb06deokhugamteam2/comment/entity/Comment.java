@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
+import org.hibernate.annotations.SQLRestriction;
 import org.hibernate.annotations.SoftDelete;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -16,7 +17,7 @@ import java.util.UUID;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@SoftDelete
+@SQLRestriction("deleted = false")
 @Table(name = "comments")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -27,17 +28,18 @@ public class Comment {
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @NotFound(action = NotFoundAction.IGNORE)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @NotFound(action = NotFoundAction.IGNORE)
     @JoinColumn(name = "review_id", nullable = false)
     private Review review;
 
     @Column(nullable = false)
     private String content;
+
+    @Column(nullable = false)
+    private Boolean deleted = false;
 
     @Column(nullable = false,name = "created_at", updatable = false)
     @CreatedDate

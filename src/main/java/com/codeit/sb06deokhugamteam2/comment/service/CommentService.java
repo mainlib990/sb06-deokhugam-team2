@@ -12,6 +12,7 @@ import com.codeit.sb06deokhugamteam2.common.exception.exceptions.CommentExceptio
 import com.codeit.sb06deokhugamteam2.notification.NotificationComponent;
 import com.codeit.sb06deokhugamteam2.notification.entity.dto.request.NotificationCreateRequest;
 import com.codeit.sb06deokhugamteam2.review.adapter.out.entity.Review;
+import com.codeit.sb06deokhugamteam2.review.adapter.out.entity.ReviewStat;
 import com.codeit.sb06deokhugamteam2.user.entity.User;
 import com.codeit.sb06deokhugamteam2.user.repository.UserRepository;
 import jakarta.persistence.EntityManager;
@@ -66,9 +67,16 @@ public class CommentService {
 
         String commenterNickname = user.getNickname();
 
+        //댓글 등록시 알림 보내기
         String notificationContent =
                 "[" + commenterNickname + "]님이 나의 리뷰에 댓글을 남겼습니다.\n" +
                         request.content();
+
+        //댓글 등록시 commentCount증가
+        ReviewStat stat = em.find(ReviewStat.class, reviewId);
+        if (stat != null) {
+            stat.commentCount(stat.commentCount() + 1);
+        }
 
         NotificationCreateRequest req = new NotificationCreateRequest(
                 review.user().getId(),
@@ -197,7 +205,12 @@ public class CommentService {
             );
         }
 
-        commentRepository.delete(foundComment);
+        commentRepository.softDeleteById(commentId);
+
+        ReviewStat stat = em.find(ReviewStat.class, foundComment.getReview().id());
+        if (stat != null) {
+            stat.commentCount(stat.commentCount() - 1);
+        }
     }
 
     public void hardDelete(UUID commentId, UUID userId) {
@@ -215,6 +228,13 @@ public class CommentService {
         }
 
         commentRepository.hardDeleteById(commentId);
+
+        if (!foundComment.getDeleted()) {
+            ReviewStat stat = em.find(ReviewStat.class, foundComment.getReview().id());
+            if (stat != null) {
+                stat.commentCount(stat.commentCount() - 1);
+            }
+        }
     }
 
 

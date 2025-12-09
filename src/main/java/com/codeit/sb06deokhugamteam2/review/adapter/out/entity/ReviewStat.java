@@ -8,7 +8,7 @@ import org.hibernate.annotations.NotFoundAction;
 import java.util.UUID;
 
 @Entity
-@Table(name = "reviewstats")
+@Table(name = "review_stats")
 public class ReviewStat {
 
     @Id
