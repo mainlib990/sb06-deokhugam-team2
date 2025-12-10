@@ -17,6 +17,7 @@ public class BookFixture {
                 .isbn(String.format("%013d", count))
                 .publishedDate(LocalDate.now())
                 .author("author" + count)
+                .deleted(false)
                 .build();
         BookStats bookStats = createBookStats(book);
         book.setBookStats(bookStats);
