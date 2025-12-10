@@ -62,7 +62,7 @@ public class CommentQueryRepositoryImpl implements CommentQueryRepository {
                 .selectFrom(comment)
                 .where(condition)
                 .orderBy(order1, order2)
-                .limit(size)
+                .limit(size + 1)
                 .fetch();
     }
 
@@ -77,15 +77,5 @@ public class CommentQueryRepositoryImpl implements CommentQueryRepository {
                         comment.review.id.eq(reviewId)
                 )
                 .fetchOne();
-    }
-
-    private BooleanExpression cursorCondition(QComment comment, Instant after, UUID cursor) {
-
-        if (after == null || cursor == null) {
-            return null;
-        }
-
-        return comment.createdAt.eq(after)
-                .and(comment.id.lt(cursor));
     }
 }
