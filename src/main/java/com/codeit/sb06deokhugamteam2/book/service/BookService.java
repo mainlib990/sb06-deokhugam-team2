@@ -91,10 +91,11 @@ public class BookService {
         return naverSearchClient.bookSearchByIsbn(isbn);
     }
 
-    /*
-    수정 작업은 재시도 하지 않음. 사용자가 확인 후 다시 수정 요청하도록 함.
-    트랜잭션 커밋 시 버전 충돌나면 낙관적 락 예외 throw
-     */
+    @Retryable(
+            retryFor = {ObjectOptimisticLockingFailureException.class},
+            maxAttempts = 100,
+            backoff = @Backoff(delay = 100)
+    )
     public BookDto update(UUID bookId, BookUpdateRequest bookUpdateRequest, Optional<BookImageCreateRequest> optionalBookImageCreateRequest) {
         Book findBook = bookRepository.findById(bookId)
                 .orElseThrow(() -> new BookException(
@@ -168,6 +169,8 @@ public class BookService {
         return bookMapper.toDto(findBook);
     }
 
+    // todo 책임 분리 필요
+    @Transactional(readOnly = true)
     public CursorPageResponsePopularBookDto getPopularBooks(PeriodType period, String cursor, Instant after, Sort.Direction direction, Integer limit) {
 
         List<Dashboard> bookDashboard = dashboardRepository.findPopularBookListByCursor(RankingType.BOOK, period, cursor, after, direction, limit);
@@ -213,20 +216,43 @@ public class BookService {
             );
         });
 
-        return bookCursorMapper.toCursorBookDto(popularBookDtoList, limit);
+        boolean hasNext;
+        String nextCursor;
+        Instant nextAfter;
+        if (popularBookDtoList.size() > limit) {
+            popularBookDtoList.remove(limit.intValue());       // 추가로 가져온 한 개의 데이터 제거
+            hasNext = true;
+            nextCursor = popularBookDtoList.get(popularBookDtoList.size() - 1).rank() + "";
+            nextAfter = popularBookDtoList.get(popularBookDtoList.size() - 1).createdAt();
+        } else {
+            hasNext = false;
+            nextCursor = null;
+            nextAfter = null;
+        }
+
+        return bookCursorMapper.toCursorBookDto(popularBookDtoList, hasNext, nextCursor, nextAfter);
     }
 
-    // 마지막 재시도 후 실패 시 낙관적 락 예외 그대로 throw
+    /*
+    1. 마지막 재시도 후 실패 시 낙관적 락 예외 그대로 throw
+    2. 버전 증가 시도를 하여야 낙관적 락 예외 발생하여 충돌 확인 가능
+    3. 버전 증가 시도는 dirty checking 시점에 이루어지므로 조회 후 setDeleted 흐름으로 작성
+     */
     @Retryable(
             retryFor = {ObjectOptimisticLockingFailureException.class},
             maxAttempts = 100,
             backoff = @Backoff(delay = 100)
     )
     public void deleteSoft(UUID bookId) {
-        log.info("도서 논리 삭제 시도: {}", bookId);
+        Book findBook = bookRepository.findById(bookId)
+                .orElseThrow(() -> new BookException(
+                        ErrorCode.NO_ID_VARIABLE,
+                        Map.of("bookId", bookId),
+                        HttpStatus.NOT_FOUND));
+
         bookRepository.deleteSoft_Reviews_CommentsByBookId(bookId);
         bookRepository.deleteSoft_ReviewsByBookId(bookId);
-        bookRepository.deleteSoftById(bookId);
+        findBook.setDeleted(true);
         log.info("도서 논리 삭제 완료: {}", bookId);
     }
 

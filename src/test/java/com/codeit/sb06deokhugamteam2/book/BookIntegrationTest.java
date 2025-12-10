@@ -391,6 +391,9 @@ public class BookIntegrationTest {
         순차적으로 요청이 간다면 버전이 증가할 것이고 업데이트 성공 횟수는 최종 버전과 같아야 함
         동시 요청이 간다면 낙관적 락 예외가 발생하여 실패 횟수가 늘어날 것임
          */
+        System.out.println("성공 횟수: " + successCount.get());
+        System.out.println("최종 버전: " + finalVersion);
+        System.out.println("실패 횟수: " + failCount.get());
         assertThat(successCount.get()).isEqualTo(finalVersion);
         assertThat(failCount.get()).isEqualTo(threadCount - finalVersion);
 

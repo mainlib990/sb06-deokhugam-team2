@@ -21,6 +21,7 @@ public class BookDashboardScheduler {
     private final JobLauncher jobLauncher;
     private final Job createRankingBooksJob;
 
+    // 기본은 Asia/Seoul (KST) 타임존으로 스케쥴링 됨
     @Scheduled(cron = "0 0 0 * * ?")
     public void runDailyJob() {
 

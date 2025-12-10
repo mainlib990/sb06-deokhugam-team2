@@ -10,7 +10,7 @@ import java.util.List;
 @Component
 public class BookCursorMapper {
 
-    public CursorPageResponsePopularBookDto toCursorBookDto(List<PopularBookDto> popularBookDtoList, Integer limit) {
+    public CursorPageResponsePopularBookDto toCursorBookDto(List<PopularBookDto> popularBookDtoList, boolean hasNext, String nextCursor, Instant nextAfter) {
 
         if(popularBookDtoList.isEmpty()) {
             return CursorPageResponsePopularBookDto.builder()
@@ -22,16 +22,6 @@ public class BookCursorMapper {
                     .hasNext(false)
                     .build();
         }
-
-        boolean hasNext = false;
-        if (popularBookDtoList.size() > limit) {
-            popularBookDtoList.remove(limit.intValue());       // 추가로 가져온 한 개의 데이터 제거
-            hasNext = true;
-        }
-
-        String nextCursor = popularBookDtoList.get(popularBookDtoList.size() - 1).rank() + "";
-
-        Instant nextAfter = popularBookDtoList.get(popularBookDtoList.size() - 1).createdAt();
 
         return CursorPageResponsePopularBookDto.builder()
                 .content(popularBookDtoList)

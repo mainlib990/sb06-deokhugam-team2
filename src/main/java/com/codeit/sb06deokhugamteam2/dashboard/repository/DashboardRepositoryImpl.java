@@ -53,9 +53,12 @@ public class DashboardRepositoryImpl implements DashboardRepositoryCustom {
         builder.and(dashboard.rankingType.eq(rankingType));
         builder.and(dashboard.periodType.eq(period));
 
-        // 오늘 생성된 데이터만 조회 -- 00:00 기준
+        /*
+        오늘 생성된 대시보드부터 조회
+        createdAt이 Instant이라서 스케쥴 실행시간인 KST 00:00을 전날 UTC 15:00로 변환
+         */
         Instant today = LocalDate.now()
-                .atStartOfDay(ZoneId.of("UTC"))
+                .atStartOfDay(ZoneId.of("Asia/Seoul"))
                 .toInstant();
 
         builder.and(dashboard.createdAt.goe(today));

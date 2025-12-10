@@ -19,12 +19,13 @@ spring:
     client-id: ${NAVER_CLIENT_ID}
     client-secret: ${NAVER_CLIENT_SECRET}
 
-  ocr:
-    api-key: ${OCR_API_KEY}
-
   batch:
     job:
       enabled: false
 
   flyway:
     baseline-on-migrate: true
+
+deokhugam:
+  ocr:
+    api-key: ${OCR_API_KEY}

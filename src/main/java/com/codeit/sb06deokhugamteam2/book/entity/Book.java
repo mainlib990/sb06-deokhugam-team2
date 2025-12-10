@@ -50,7 +50,7 @@ public class Book {
     @Column(nullable = true, name = "thumbnail_url")
     private String thumbnailUrl;
 
-    @OneToOne(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "book", cascade = CascadeType.ALL)
     @Setter
     private BookStats bookStats;
 
@@ -76,6 +76,7 @@ public class Book {
     @Column(nullable = false, name = "updated_at")
     private Instant updatedAt;
 
+    @Setter
     @Builder.Default
     @Column(nullable = false)
     private Boolean deleted = false;

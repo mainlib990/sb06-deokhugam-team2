@@ -24,5 +24,6 @@ spring:
     client-id: ${NAVER_CLIENT_ID:111}
     client-secret: ${NAVER_CLIENT_SECRET:111}
 
+deokhugam:
   ocr:
     api-key: ${OCR_API_KEY:111}

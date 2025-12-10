@@ -23,8 +23,10 @@ public class OcrService {
     private final ObjectMapper objectMapper;
     private final OkHttpClient okHttpClient;
 
-    @Value("${spring.ocr.api-key}")
+    @Value("${deokhugam.ocr.api-key}")
     private String ocrApiKey;
+
+    private final Pattern pattern = Pattern.compile("(\\d+)-(\\d+)-(\\d+)-(\\d+)-(\\d+)");  // ex. 978-3-16-148410-0
 
     public String getIsbnByOcrApi(MultipartFile image) {
 
@@ -46,7 +48,6 @@ public class OcrService {
                     .get("ParsedText")
                     .asText();
 
-            Pattern pattern = Pattern.compile("(\\d+)-(\\d+)-(\\d+)-(\\d+)-(\\d+)");     // ex. 978-3-16-148410-0
             Matcher matcher = pattern.matcher(parsedText);
 
             if (matcher.find()) {

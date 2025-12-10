@@ -25,6 +25,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -80,16 +81,20 @@ public class BookDashboardCreateBatchConfig {
          1. 계산된 점수 기준 내림차순 정렬
          2. 점수가 같을 경우 도서의 생성일 기준 내림차순 정렬
          3. since 가 null 이면 전체 기간, 아니면 해당 기간 내의 리뷰만 집계
+         4. 논리 삭제된 도서는 제외
+         5. 리뷰가 없는 도서는 제외
          */
-        String nativeQuery =
-                "SELECT b.id, b.created_at, COUNT(r.book_id) AS review_count, SUM(r.rating) AS rating_sum, " +
-                        "       (COUNT(r.book_id) * 0.4 + SUM(r.rating) / COUNT(r.book_id) * 0.6) AS score " +
-                        "FROM books as b " +
-                        "LEFT JOIN reviews as r ON b.id = r.book_id " +
-                        "AND r.created_at >= ? " +
-                        "GROUP BY b.id, b.created_at " +
-                        "HAVING COUNT(r.book_id) > 0 " +
-                        "ORDER BY score DESC, b.created_at DESC";
+        String nativeQuery = """
+                                SELECT b.id, b.created_at, COUNT(r.book_id) AS review_count, SUM(r.rating) AS rating_sum,
+                                       (COUNT(r.book_id) * 0.4 + SUM(r.rating) / COUNT(r.book_id) * 0.6) AS score
+                                FROM books as b
+                                LEFT JOIN reviews as r ON b.id = r.book_id
+                                AND r.created_at >= ?
+                                WHERE b.deleted = false
+                                GROUP BY b.id, b.created_at
+                                HAVING COUNT(r.book_id) > 0
+                                ORDER BY score DESC, b.created_at DESC
+                """;
 
         final LocalDateTime finalSince = since;
 
@@ -122,11 +127,11 @@ public class BookDashboardCreateBatchConfig {
             @Value("#{jobParameters['periodType']}") PeriodType periodType
     ) {
         /*
-         1. 정렬된 순서대로 랭크 부여
-         2. 1등이 제일 먼저 만들어져야 함 (보조커서 after 처리를 위해)
+        정렬된 순서대로 랭크 부여
          */
-        AtomicLong rank = new AtomicLong(1L);
+        AtomicLong rank = new AtomicLong(1L);   // 객체 생성시 한번만 호출됨
         return bookDashboardDto ->
+                // 프로세스 호출될 때마다 rank 값 1씩 증가
                 Dashboard.builder()
                         .entityId(bookDashboardDto.id())
                         .rankingType(RankingType.BOOK)
