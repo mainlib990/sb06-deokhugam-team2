@@ -23,6 +23,7 @@ import org.springframework.data.domain.Sort;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.List;
 
@@ -88,6 +89,9 @@ public class DashboardRepositoryImpl implements DashboardRepositoryCustom {
     @Override
     public Slice<PopularReviewDto> findPopularReviews(PeriodType periodType, String direction, Long cursor,
                                                       Instant after, int limit, Instant startDate, Instant endDate) {
+        ZoneId zoneId = ZoneId.systemDefault();
+        Instant batchStartDate = LocalDate.now().atStartOfDay(zoneId).toInstant();
+        Instant batchEndDate = LocalDate.now().atTime(LocalTime.MAX).atZone(zoneId).toInstant();
 
         OrderSpecifier<?> primaryOrder = getPrimaryOrder(direction);
         OrderSpecifier<?> secondaryOrder = getSecondaryOrder(direction);
@@ -111,7 +115,7 @@ public class DashboardRepositoryImpl implements DashboardRepositoryCustom {
                         .on(book.deleted.isFalse())
                         .innerJoin(review.user, user)
                         .on(user.deletedAt.isNull())
-                        .where(dashboard.periodType.eq(periodType).and(dashboard.createdAt.between(startDate, endDate)),
+                        .where(dashboard.periodType.eq(periodType).and(dashboard.createdAt.between(batchStartDate, batchEndDate)),
                                 getCursorAndAfterCondition(direction, cursor, after))
                         .groupBy(dashboard.id, review.id, user.id, book.id)
                         .orderBy(primaryOrder, secondaryOrder)
