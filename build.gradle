@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'com.codeit'
-version = '0.0.1-SNAPSHOT'
+version = '0.0.3-SNAPSHOT'
 description = 'sb06-deokhugam-team2'
 
 java {
@@ -66,6 +66,6 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
-tasks.named('test') {
-    useJUnitPlatform()
-}
+//tasks.named('test') {
+//    useJUnitPlatform()
+//}
