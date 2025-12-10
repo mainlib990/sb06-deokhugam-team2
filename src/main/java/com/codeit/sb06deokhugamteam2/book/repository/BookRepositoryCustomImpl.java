@@ -32,8 +32,7 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
         List<Book> books = queryFactory.selectFrom(book)
                 .innerJoin(book.bookStats, bookStats).fetchJoin()
                 .where(keywordContains(keyword),
-                        getCursorCondition(cursor, orderBy, direction),
-                        getNextAfterCondition(nextAfter, direction))
+                        getCursorCondition(cursor, orderBy, direction, nextAfter))
                 .orderBy(primarySort, secondarySort)
                 .limit(limit + 1)
                 .fetch();
@@ -68,39 +67,53 @@ public class BookRepositoryCustomImpl implements BookRepositoryCustom {
                         .otherwise(ratingSum.divide(bookStats.reviewCount));
                 yield direction.equalsIgnoreCase("ASC") ? rating.asc() : rating.desc();
             }
-            case "reviewCount" -> direction.equalsIgnoreCase("ASC") ? bookStats.reviewCount.asc() : bookStats.reviewCount.desc();
+            case "reviewCount" ->
+                    direction.equalsIgnoreCase("ASC") ? bookStats.reviewCount.asc() : bookStats.reviewCount.desc();
             default -> direction.equalsIgnoreCase("ASC") ? book.title.asc() : book.title.desc();
         };
     }
 
-    private BooleanExpression getCursorCondition(String cursor, String orderBy, String direction) {
-        if (cursor == null) {
+    private BooleanExpression getCursorCondition(String cursor, String orderBy, String direction, Instant nextAfter) {
+        if (cursor == null || nextAfter == null) {
             return null;
         }
 
         return switch (orderBy) {
             case "rating" -> {
+                double mainCursor = Double.parseDouble(cursor);
                 NumberExpression<Double> ratingSum = bookStats.ratingSum.castToNum(Double.class);
                 NumberExpression<Double> rating = new CaseBuilder()
                         .when(ratingSum.loe(0.0).or(bookStats.reviewCount.loe(0)))
                         .then(0.0)
                         .otherwise(ratingSum.divide(bookStats.reviewCount));
-                yield direction.equalsIgnoreCase("ASC") ? rating.goe(Double.parseDouble(cursor)) : rating.loe(Double.parseDouble(cursor));
+                yield direction.equalsIgnoreCase("ASC") ?
+                        rating.gt(mainCursor)
+                                .or(rating.eq(mainCursor).and(book.createdAt.after(nextAfter))) :
+                        rating.lt(mainCursor)
+                                .or(rating.eq(mainCursor).and(book.createdAt.before(nextAfter)));
             }
-            case "publishedDate" -> direction.equalsIgnoreCase("ASC") ?
-                    book.publishedDate.goe(LocalDate.parse(cursor)) : book.publishedDate.loe(LocalDate.parse(cursor));
-            case "reviewCount" ->
-                    direction.equalsIgnoreCase("ASC") ? bookStats.reviewCount.goe(Integer.parseInt(cursor)) : bookStats.reviewCount.loe(Integer.parseInt(cursor));
-            default -> direction.equalsIgnoreCase("ASC") ? book.title.goe(cursor) : book.title.loe(cursor);
+            case "publishedDate" -> {
+                LocalDate mainCursor = LocalDate.parse(cursor);
+                yield direction.equalsIgnoreCase("ASC") ?
+                        book.publishedDate.gt(mainCursor)
+                                .or(book.publishedDate.eq(mainCursor).and(book.createdAt.after(nextAfter))) :
+                        book.publishedDate.lt(mainCursor)
+                                .or(book.publishedDate.eq(mainCursor).and(book.createdAt.before(nextAfter)));
+            }
+            case "reviewCount" -> {
+                int mainCursor = Integer.parseInt(cursor);
+
+                yield direction.equalsIgnoreCase("ASC") ?
+                        bookStats.reviewCount.gt(mainCursor)
+                                .or(bookStats.reviewCount.eq(mainCursor).and(book.createdAt.after(nextAfter))) :
+                        bookStats.reviewCount.lt(mainCursor)
+                                .or(bookStats.reviewCount.eq(mainCursor).and(book.createdAt.before(nextAfter)));
+            }
+            default -> direction.equalsIgnoreCase("ASC") ?
+                    book.title.gt(cursor)
+                            .or(book.title.eq(cursor).and(book.createdAt.after(nextAfter))) :
+                    book.title.loe(cursor)
+                            .or(book.title.eq(cursor).and(book.createdAt.before(nextAfter)));
         };
-    }
-
-    private BooleanExpression getNextAfterCondition(Instant nextAfter, String direction) {
-        if (nextAfter == null) {
-            return null;
-        }
-
-        return direction.equalsIgnoreCase("ASC") ?
-                book.createdAt.after(nextAfter) : book.createdAt.before(nextAfter);
     }
 }
