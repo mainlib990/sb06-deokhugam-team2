@@ -43,8 +43,9 @@ public class UserService {
 
     @Transactional
     public UserDto register(UserRegisterRequest request) {
-
+        log.info("User Registration requested for email: {}", request.email());
         if (userQueryRepository.findByEmailWithDeleted(request.email()).isPresent()) {
+            log.warn("Registration failed: Duplicate email found for: {}", request.email());
             throw new UserException(ErrorCode.DUPLICATE_EMAIL, Collections.emptyMap(),
                     HttpStatus.CONFLICT);
         }
@@ -52,24 +53,32 @@ public class UserService {
         User user = userMapper.toEntity(request);
 
         User savedUser = userRepository.save(user);
+        log.info("User Registration successful: New user created with ID {} and email {}", savedUser.getId(), savedUser.getEmail());
         return userMapper.toDto(savedUser);
     }
 
     public UserDto login(UserLoginRequest request) {
+        log.info("User Login requested for email: {}", request.email());
         User user = userQueryRepository.findByEmailWithDeleted(request.email())
-                .orElseThrow(() -> new UserException(ErrorCode.INVALID_USER_DATA, Collections.emptyMap(),
-                    HttpStatus.BAD_REQUEST));
+                .orElseThrow(() -> {
+                    // [로깅 추가] 사용자 미발견 (아이디 불일치)
+                    log.warn("Login failed: User not found for email: {}", request.email());
+                    return new UserException(ErrorCode.INVALID_USER_DATA, Collections.emptyMap(),
+                            HttpStatus.BAD_REQUEST);
+                });
 
         if (user.getDeletedAt() != null) {
+            log.warn("Login failed: User is soft-deleted. ID: {}, Email: {}", user.getId(), request.email());
             throw new UserException(ErrorCode.INVALID_USER, Collections.emptyMap(),
                 HttpStatus.BAD_REQUEST);
         }
 
         if (!request.password().equals(user.getPassword())) {
+            log.warn("Login failed: Password mismatch for user ID: {}", user.getId());
             throw new UserException(ErrorCode.INVALID_USER_DATA, Collections.emptyMap(),
                 HttpStatus.BAD_REQUEST);
         }
-
+        log.info("User Login successful: User ID {} logged in.", user.getId());
         return userMapper.toDto(user);
     }
 
