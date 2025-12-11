@@ -30,31 +30,35 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(UserException.class)
   public ResponseEntity<ErrorResponse> handleUserExceptionHandler(UserException ex) {
     ErrorResponse error = createErrorResponse(ex, ex.getHttpStatus(), ex.getDetails());
+    log.error(ex.getMessage(), ex,error.getMessage(),ex.getDetails());
     return ResponseEntity.status(error.getStatus()).body(error);
   }
 
   @ExceptionHandler(MDCException.class)
   public ResponseEntity<ErrorResponse> handleMDCExceptionHandler(MDCException ex) {
     ErrorResponse error = createErrorResponse(ex, ex.getHttpStatus(), ex.getDetails());
+    log.error(ex.getMessage(), ex,error.getMessage(),ex.getDetails());
     return ResponseEntity.status(error.getStatus()).body(error);
   }
 
   @ExceptionHandler(NotificationException.class)
   public ResponseEntity<ErrorResponse> handleNotificationExceptionHandler(NotificationException ex) {
     ErrorResponse error = createErrorResponse(ex, ex.getHttpStatus(), ex.getDetails());
+    log.error(ex.getMessage(), ex,error.getMessage(),ex.getDetails());
     return ResponseEntity.status(error.getStatus()).body(error);
   }
 
   @ExceptionHandler(BookException.class)
   public ResponseEntity<ErrorResponse> handleBookException(BookException ex) {
       ErrorResponse error = createErrorResponse(ex, ex.getHttpStatus(), ex.getDetails());
+      log.error(ex.getMessage(), ex,error.getMessage(),ex.getDetails());
       return ResponseEntity.status(error.getStatus()).body(error);
   }
 
   @ExceptionHandler(OcrException.class)
   public ResponseEntity<ErrorResponse> handleOcrException(OcrException ex) {
-    log.error("Ocr 에러", ex);
     ErrorResponse error = createErrorResponse(ex, ex.getHttpStatus(), ex.getDetails());
+    log.error(ex.getMessage(), ex,error.getMessage(),ex.getDetails());
     return ResponseEntity.status(error.getStatus()).body(error);
   }
 // </editor-fold>
@@ -64,12 +68,14 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(AWSException.class)
   public ResponseEntity<ErrorResponse> handleAWSException(AWSException ex) {
       ErrorResponse error = createErrorResponse(ex, ex.getHttpStatus(), ex.getDetails());
+      log.error(ex.getMessage(), ex,error.getMessage(),ex.getDetails());
       return ResponseEntity.status(error.getStatus()).body(error);
   }
 
   @ExceptionHandler(NaverSearchException.class)
   public ResponseEntity<ErrorResponse> handleNaverSearchException(NaverSearchException ex) {
       ErrorResponse error = createErrorResponse(ex, ex.getHttpStatus(), ex.getDetails());
+      log.error(ex.getMessage(), ex,error.getMessage(),ex.getDetails());
       return ResponseEntity.status(error.getStatus()).body(error);
   }
 
@@ -93,6 +99,7 @@ public class GlobalExceptionHandler {
         ));
 
     ErrorResponse error = createErrorResponse(ex, HttpStatus.BAD_REQUEST, errorDetails);
+    log.error(ex.getMessage(), ex,error.getMessage(), errorDetails);
     return ResponseEntity.status(error.getStatus()).body(error);
   }
 
@@ -100,6 +107,7 @@ public class GlobalExceptionHandler {
   public ResponseEntity<ErrorResponse> handleValidationException(
       MissingServletRequestParameterException ex) {
     ErrorResponse error = createErrorResponse(ex, HttpStatus.BAD_REQUEST, Map.of());
+    log.error(ex.getMessage(), ex,error.getMessage());
     return ResponseEntity.status(error.getStatus()).body(error);
   }
 
@@ -118,6 +126,7 @@ public class GlobalExceptionHandler {
 
 
     ErrorResponse error = createErrorResponse(ex, HttpStatus.BAD_REQUEST, errorDetails);
+    log.error(ex.getMessage(), ex,error.getMessage(),errorDetails);
     return ResponseEntity.status(error.getStatus()).body(error);
   }
 
@@ -126,6 +135,7 @@ public class GlobalExceptionHandler {
   public ResponseEntity<ErrorResponse> handleTypeMismatch(
       MethodArgumentTypeMismatchException ex) {
     ErrorResponse error = createErrorResponse(ex, HttpStatus.BAD_REQUEST, Map.of());
+    log.error(ex.getMessage(), ex,error.getMessage());
     return ResponseEntity.status(error.getStatus()).body(error);
   }
 
@@ -133,6 +143,7 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(NoSuchElementException.class)
   public ResponseEntity<ErrorResponse> handleNoSuchElement(NoSuchElementException ex) {
     ErrorResponse error = createErrorResponse(ex, HttpStatus.NOT_FOUND, Map.of());
+    log.error(ex.getMessage(), ex,error.getMessage());
     return ResponseEntity.status(error.getStatus()).body(error);
   }
 
@@ -141,6 +152,7 @@ public class GlobalExceptionHandler {
   public ResponseEntity<ErrorResponse> handleMethodNotSupported(
       HttpRequestMethodNotSupportedException ex) {
     ErrorResponse error = createErrorResponse(ex, HttpStatus.METHOD_NOT_ALLOWED, Map.of());
+    log.error(ex.getMessage(), ex,error.getMessage());
     return ResponseEntity.status(error.getStatus()).body(error);
   }
 
@@ -149,6 +161,7 @@ public class GlobalExceptionHandler {
   public ResponseEntity<ErrorResponse> handleDataIntegrityViolation(
       DataIntegrityViolationException ex) {
     ErrorResponse error = createErrorResponse(ex, HttpStatus.CONFLICT, Map.of());
+    log.error(ex.getMessage(), ex,error.getMessage());
     return ResponseEntity.status(error.getStatus()).body(error);
   }
 
@@ -156,16 +169,16 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(ObjectOptimisticLockingFailureException.class)
   public ResponseEntity<ErrorResponse> handleOptimisticLockingFailure(
       ObjectOptimisticLockingFailureException ex) {
-    log.error(ex.getMessage(), ex);
     ErrorResponse error = createErrorResponse(ex, HttpStatus.CONFLICT, Map.of());
+    log.error(ex.getMessage(), ex,error.getMessage());
     return ResponseEntity.status(error.getStatus()).body(error);
   }
 
   // 500 서버 내부 오류 (예상치 못한 모든 오류 처리)
   @ExceptionHandler(Exception.class)
   public ResponseEntity<ErrorResponse> handleException(Exception ex) {
-    log.error(ex.getMessage(), ex);
     ErrorResponse error = createErrorResponse(ex, HttpStatus.INTERNAL_SERVER_ERROR, Map.of());
+    log.error(ex.getMessage(), ex,error.getMessage());
     return ResponseEntity.status(error.getStatus()).body(error);
   }
   // </editor-fold>
