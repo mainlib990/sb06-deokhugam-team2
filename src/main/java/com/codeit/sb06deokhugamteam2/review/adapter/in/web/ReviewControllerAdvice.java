@@ -4,15 +4,17 @@ import com.codeit.sb06deokhugamteam2.common.exception.ErrorResponse;
 import com.codeit.sb06deokhugamteam2.review.domain.exception.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.Instant;
 import java.util.Collections;
 
-@ControllerAdvice
+@RestControllerAdvice(basePackageClasses = ReviewController.class)
+@Order(0)
 public class ReviewControllerAdvice {
 
     private static final Logger log = LoggerFactory.getLogger(ReviewControllerAdvice.class);
@@ -20,7 +22,7 @@ public class ReviewControllerAdvice {
     @ExceptionHandler(InvalidReviewCountException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleInvalidReviewCountException(InvalidReviewCountException e) {
-        log.error(e.getMessage());
+        log.error(e.getMessage(), e);
         return ErrorResponse.builder()
                 .timestamp(Instant.now())
                 .code("INVALID_REVIEW_COUNT")
@@ -34,7 +36,7 @@ public class ReviewControllerAdvice {
     @ExceptionHandler(ReviewBookNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleBookNotFoundException(ReviewBookNotFoundException e) {
-        log.error(e.getMessage());
+        log.error(e.getMessage(), e);
         return ErrorResponse.builder()
                 .timestamp(Instant.now())
                 .code("BOOK_NOT_FOUND")
@@ -48,7 +50,7 @@ public class ReviewControllerAdvice {
     @ExceptionHandler(ReviewUserNotFoundException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleUserNotFoundException(ReviewUserNotFoundException e) {
-        log.error(e.getMessage());
+        log.error(e.getMessage(), e);
         return ErrorResponse.builder()
                 .timestamp(Instant.now())
                 .code("USER_NOT_FOUND")
@@ -62,7 +64,7 @@ public class ReviewControllerAdvice {
     @ExceptionHandler(AlreadyExistsReviewException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse handleAlreadyExistsReviewException(AlreadyExistsReviewException e) {
-        log.error(e.getMessage());
+        log.error(e.getMessage(), e);
         return ErrorResponse.builder()
                 .timestamp(Instant.now())
                 .code("REVIEW_ALREADY_EXISTS")
@@ -76,7 +78,7 @@ public class ReviewControllerAdvice {
     @ExceptionHandler(ReviewNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleReviewNotFoundException(ReviewNotFoundException e) {
-        log.error(e.getMessage());
+        log.error(e.getMessage(), e);
         return ErrorResponse.builder()
                 .timestamp(Instant.now())
                 .code("REVIEW_NOT_FOUND")
@@ -90,7 +92,7 @@ public class ReviewControllerAdvice {
     @ExceptionHandler(ReviewPermissionDeniedException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ErrorResponse handleReviewPermissionDeniedException(ReviewPermissionDeniedException e) {
-        log.error(e.getMessage());
+        log.error(e.getMessage(), e);
         return ErrorResponse.builder()
                 .timestamp(Instant.now())
                 .code("REVIEW_NOT_OWNED")
@@ -104,7 +106,7 @@ public class ReviewControllerAdvice {
     @ExceptionHandler(InvalidReviewRatingException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleInvalidReviewRatingException(InvalidReviewRatingException e) {
-        log.error(e.getMessage());
+        log.error(e.getMessage(), e);
         return ErrorResponse.builder()
                 .timestamp(Instant.now())
                 .code("INVALID_REVIEW_RATING")
@@ -118,7 +120,7 @@ public class ReviewControllerAdvice {
     @ExceptionHandler(InvalidReviewContentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleInvalidReviewContentException(InvalidReviewContentException e) {
-        log.error(e.getMessage());
+        log.error(e.getMessage(), e);
         return ErrorResponse.builder()
                 .timestamp(Instant.now())
                 .code("INVALID_REVIEW_CONTENT")
@@ -132,7 +134,7 @@ public class ReviewControllerAdvice {
     @ExceptionHandler(ReviewException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleReviewException(ReviewException e) {
-        log.error(e.getMessage());
+        log.error(e.getMessage(), e);
         return ErrorResponse.builder()
                 .timestamp(Instant.now())
                 .code("REVIEW_ERROR")

@@ -50,7 +50,7 @@ public class ReviewDomain {
         ReviewStatDomain reviewStat = ReviewStatDomain.create(id);
         Instant createdAt = Instant.now();
         Instant updatedAt = createdAt;
-        boolean isHidden = false;
+        boolean hidden = false;
 
         return new ReviewDomain(
                 id,
@@ -61,7 +61,7 @@ public class ReviewDomain {
                 content,
                 createdAt,
                 updatedAt,
-                isHidden
+                hidden
         );
     }
 
@@ -129,16 +129,16 @@ public class ReviewDomain {
         return this;
     }
 
-    public ReviewDomain increaseReviewLike() {
+    public ReviewDomain increaseReviewLike(UUID likerId) {
         reviewStat.increaseLikeCount();
         Instant likedAt = Instant.now();
-        events.add(new ReviewLikedEvent(id, userId, likedAt));
+        events.add(new ReviewLikedEvent(id, likerId, likedAt));
         return this;
     }
 
-    public ReviewDomain decreaseReviewLike() {
+    public ReviewDomain decreaseReviewLike(UUID likerId) {
         reviewStat.decreaseLikeCount();
-        events.add(new ReviewLikeCanceledEvent(id, userId));
+        events.add(new ReviewLikeCanceledEvent(id, likerId));
         return this;
     }
 

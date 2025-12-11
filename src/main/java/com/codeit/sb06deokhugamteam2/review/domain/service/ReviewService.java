@@ -40,9 +40,9 @@ public class ReviewService {
     public void toggleReviewLike(ReviewDomain review, ReviewLikeDomain reviewLike) {
         reviewLike.toggleLike();
         if (reviewLike.isLiked()) {
-            review.increaseReviewLike();
+            review.increaseReviewLike(reviewLike.userId());
         } else {
-            review.decreaseReviewLike();
+            review.decreaseReviewLike(reviewLike.userId());
         }
     }
 }

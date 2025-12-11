@@ -154,15 +154,17 @@ public class ReviewCommandService
         ReviewDomain review = saveReviewPort.findByIdForUpdate(reviewId)
                 .map(ReviewDomain::from)
                 .orElseThrow(() -> new ReviewNotFoundException(reviewId));
-        ReviewUserDomain user = saveUserPort.findById(requestUserId)
+        ReviewUserDomain liker = saveUserPort.findById(requestUserId)
                 .orElseThrow(() -> new ReviewUserNotFoundException(requestUserId));
-        ReviewLikeDomain reviewLike = loadLikePort.findById(reviewId, requestUserId)
-                .orElseGet(() -> new ReviewLikeDomain(reviewId, requestUserId, false));
+        ReviewLikeDomain reviewLike = loadLikePort.findById(reviewId, liker.id())
+                .orElseGet(() -> new ReviewLikeDomain(review.id(), liker.id(), false));
         reviewService.toggleReviewLike(review, reviewLike);
+        if (reviewLike.isLiked()) {
+            ReviewLikeNotificationDomain notification = ReviewLikeNotificationDomain.create(
+                    review.id(), review.userId(), review.content().value(), liker.nickname());
+            saveReviewNotificationPort.sendNotification(notification);
+        }
         saveReviewPort.update(review.toSnapshot());
-        ReviewLikeNotificationDomain notification = ReviewLikeNotificationDomain.create(
-                reviewId, review.id(), review.content().value(), user.nickname());
-        saveReviewNotificationPort.sendNotification(notification);
         review.events().forEach(eventPublisher::publish);
         review.clearEvents();
 
