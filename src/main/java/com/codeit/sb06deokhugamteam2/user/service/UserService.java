@@ -44,14 +44,30 @@ public class UserService {
     @Transactional
     public UserDto register(UserRegisterRequest request) {
         log.info("User Registration requested for email: {}", request.email());
-        if (userQueryRepository.findByEmailWithDeleted(request.email()).isPresent()) {
-            log.warn("Registration failed: Duplicate email found for: {}", request.email());
-            throw new UserException(ErrorCode.DUPLICATE_EMAIL, Collections.emptyMap(),
-                    HttpStatus.CONFLICT);
+
+        User existingUser = userRepository.findByEmail(request.email())
+                .orElse(null);
+
+        if (existingUser != null) {
+
+            if (existingUser.getDeletedAt() == null) {
+                log.warn("Registration failed: Duplicate active email found for: {}", request.email());
+                throw new UserException(ErrorCode.DUPLICATE_EMAIL, Collections.emptyMap(),
+                        HttpStatus.CONFLICT);
+            } else {
+                log.warn("Registration failed: Permanently soft-deleted user (ID: {}) attempted to rejoin.",
+                        existingUser.getId());
+
+                // 논리 삭제된 사용자는 영구적으로 재가입 불가 (다른 이메일 사용 유도)
+                throw new UserException(
+                        ErrorCode.DUPLICATE_EMAIL,
+                        Collections.singletonMap("message", "이미 사용 중이거나 삭제된 이메일입니다. 다른 이메일을 사용해주세요."),
+                        HttpStatus.CONFLICT
+                );
+            }
         }
 
         User user = userMapper.toEntity(request);
-
         User savedUser = userRepository.save(user);
         log.info("User Registration successful: New user created with ID {} and email {}", savedUser.getId(), savedUser.getEmail());
         return userMapper.toDto(savedUser);
